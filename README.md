@@ -117,23 +117,57 @@ python3 -m http.server 8080
 - 🎯 健身方案新增目标模式卡片（策略描述+强度/时长/动作数三宫格）
 - 📊 身体概况新增一句话智能总结（BMI+目标组合针对性建议）
 - 🔧 跟练模块调整至动作列表下方，信息流更合理
-- 🐛 Banner 间距双重补偿 Bug 修复
-- 🐛 表单页 header 遮挡文案修复
-- 🎨 四角统一圆角 16px、分割线/聚焦色优化
+- 🐛 Banner 间距双重补偿 Bug 修复（spacer.height + marginTop 双重补偿）
+- 🐛 表单页 header 遮挡文案修复（fixLayout 动态设置 paddingTop）
+- 🎨 Phase Banner 四角统一圆角 16px
+- 🎨 SVG Logo / favicon / theme-color 品牌色统一 #C4736E
+- 🎨 分割线 #E8E4E0、focus border #D4A574
 
-### V6.3
-- 🎨 Header Logo 48px inline SVG
-- 🐛 Banner 上方缺失圆角修复
+### V6.3 (2026-05-31)
+- ✅ Header+Tabs 双层吸顶（Header 固定品牌露出，Tabs 紧贴下方）
+- ✅ 采购清单勾选 localStorage 缓存（按 phase 独立存储）
+- ✅ 训练进度 localStorage 缓存（刷新页面恢复勾选状态）
+- ✅ 日程时间设置 localStorage 缓存
+- ✅ 视频跟练支持全平台（B站/YouTube 嵌入，小红书/抖音跳转+手动录入）
+- ✅ Tab 点击精确滚动（header+tabs+8px 偏移，不遮挡标题）
+- ✅ 外卖搜索去品牌名（纯搜索提示词）
 
-### V6.2
-- ✅ 打卡图 Canvas QR 码自绘（零外部依赖）
-- ✅ 分享三级降级
-- ✅ .ics 日历导出替代 Google Calendar 跳转
-- ✅ 健身目标 chip 交互 + 说明弹窗
-- ✅ 周期选"不规律"验证修复
+### V6.2 (2026-05-31)
+- ✅ 打卡图 Canvas QR 码自绘（零外部依赖，预计算数据内联）
+- ✅ 分享三级降级（Web Share → 下载+复制 → 仅复制文案）
+- ✅ .ics 日历导出替代 Google Calendar 跳转（iOS/Android 通用）
+- ✅ 健身目标 chip 交互 + 详情说明弹窗
+- ✅ 周期选"不规律/PCOS"验证修复（parseInt('0')=0 被误判）
+- ✅ PCOS 阶段文案去重 + 免责声明 + 文献参考
+- ✅ 表单 localStorage 缓存
+- ✅ Tab UX 重构（IntersectionObserver + smooth-scroll）
+- ✅ Header 标题品牌化 + 表单引导文案
 
-### V6.0
-- 🎉 MVP 发布：周期识别 + 饮食/健身/日程三合一
+### V6.1 (2026-05-31)
+- ✅ 顶部色块 banner 恢复（PH 数据补全）
+- ✅ 时间设置 emoji 补全 + 提示文案
+- ✅ 外卖搜索词去重 + 改为具体菜品名
+- ✅ 打卡页色块+文字恢复
+- ✅ "重新填写信息"按钮恢复
+- ✅ Tab 栏 sticky 吸顶
+
+### V6.0 (2026-05-31 核心重构)
+- 🎯 饮食方案按「阶段×目标」二维分化：5 阶段 × 4 目标 = 20 套
+- 🎯 运动方案按目标分化：5 阶段 × 4 目标 = 20 套
+- 🎯 采购清单：居家自制（可勾选+导出）+ 外卖推荐
+- 🎯 PCOS 独立阶段适配
+- 🎯 健身目标 emoji chip 选择
+
+### V5.1 (2026-05-31)
+- 帕帕拉奇→欧阳春晓
+- 选做动作加演示按钮
+- 打卡卡片重设计（QR 横排+鼓励语录+分享友好术语）
+- CORS 代理 3 轮询（allorigins→corsproxy.io→codetabs）
+- 进度条逻辑：必做/选做分别计数
+
+### V5.0 (2026-05-31 初始)
+- 🎉 MVP 发布：基础周期判定 + 饮食 + 运动 + 日程 + Tab 切换
+- 动作演示 + 跟练博主 + 进度条 + 打卡页 + BV 嵌入
 
 ---
 
