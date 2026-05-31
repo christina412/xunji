@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HerCycle · 女性周期健身管理</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#FAF7F5;--card:#fff;--text:#2D2A26;--sub:#8C8578;
+  --accent:#C4736E;--accent2:#5A8C5E;--accent3:#D4A574;
+  --phase-menstrual:#C4736E;--phase-follicular:#5A8C5E;
+  --phase-ovulation:#D4A574;--phase-luteal:#8B7BA8;
+  --radius:16px;--shadow:0 2px 16px rgba(45,42,38,0.06);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.header{background:var(--card);padding:20px 24px;border-bottom:1px solid rgba(45,42,38,0.06);position:sticky;top:0;z-index:100}
+.header h1{font-size:22px;font-weight:700;letter-spacing:-0.5px}
+.header p{font-size:13px;color:var(--sub);margin-top:2px}
+.container{max-width:480px;margin:0 auto;padding:16px}
+.card{background:var(--card);border-radius:var(--radius);padding:20px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card-title{font-size:16px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-title .icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff}
+.phase-banner{border-radius:var(--radius);padding:20px;color:#fff;position:relative;overflow:hidden;margin-bottom:14px}
+.phase-banner::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.1)}
+.phase-day{font-size:36px;font-weight:800;line-height:1}
+.phase-label{font-size:18px;font-weight:700;margin-top:4px}
+.phase-desc{font-size:13px;opacity:0.9;margin-top:6px;line-height:1.5}
+.phase-bar{display:flex;margin-top:14px;gap:3px;height:6px;border-radius:3px;overflow:hidden}
+.phase-bar span{flex:1;border-radius:3px;opacity:0.3}
+.phase-bar span.active{opacity:1}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--sub)}
+.form-group input,.form-group select{width:100%;padding:10px 14px;border:1.5px solid #EDE8E3;border-radius:10px;font-size:15px;background:var(--bg);color:var(--text);outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group select:focus{border-color:var(--accent)}
+.form-row{display:flex;gap:10px}
+.form-row .form-group{flex:1}
+.btn{width:100%;padding:13px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:active{transform:scale(0.98)}
+.tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px}
+.tab{padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:none;background:#EDE8E3;color:var(--sub);cursor:pointer;white-space:nowrap;transition:all .2s}
+.tab.active{background:var(--accent);color:#fff}
+.meal{padding:12px 0;border-bottom:1px solid rgba(45,42,38,0.06)}
+.meal:last-child{border-bottom:none}
+.meal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.meal-time{font-size:13px;font-weight:700;color:var(--accent)}
+.meal-kcal{font-size:12px;color:var(--sub);background:var(--bg);padding:2px 8px;border-radius:10px}
+.meal-items{font-size:14px;color:var(--text)}
+.meal-tip{font-size:12px;color:var(--sub);margin-top:4px;font-style:italic}
+.workout-item{padding:12px 0;border-bottom:1px solid rgba(45,42,38,0.06)}
+.workout-item:last-child{border-bottom:none}
+.workout-name{font-size:15px;font-weight:600}
+.workout-meta{font-size:12px;color:var(--sub);margin-top:2px}
+.workout-sets{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.set-tag{font-size:12px;padding:4px 10px;border-radius:8px;background:var(--bg);color:var(--text)}
+.schedule-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(45,42,38,0.06);align-items:flex-start}
+.schedule-item:last-child{border-bottom:none}
+.schedule-time{font-size:13px;font-weight:700;color:var(--accent);min-width:50px;padding-top:1px}
+.schedule-content{flex:1}
+.schedule-title{font-size:14px;font-weight:600}
+.schedule-desc{font-size:12px;color:var(--sub);margin-top:2px}
+.nutrient{margin-bottom:10px}
+.nutrient-header{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+.nutrient-bar{height:6px;border-radius:3px;background:#EDE8E3;overflow:hidden}
+.nutrient-bar span{display:block;height:100%;border-radius:3px;transition:width .8s ease}
+.bmi-display{text-align:center;padding:10px 0}
+.bmi-value{font-size:40px;font-weight:800;color:var(--accent)}
+.bmi-label{font-size:14px;color:var(--sub);margin-top:2px}
+.bmi-category{display:inline-block;margin-top:6px;padding:4px 14px;border-radius:20px;font-size:13px;font-weight:600;background:var(--accent2);color:#fff}
+.hidden{display:none!important}
+.tip-box{background:var(--bg);border-radius:12px;padding:14px;margin-top:10px;font-size:13px;color:var(--sub);line-height:1.7}
+.tip-box strong{color:var(--text)}
+::-webkit-scrollbar{width:0;height:0}
+@media(max-width:480px){.container{padding:12px}.phase-day{font-size:28px}.bmi-value{font-size:32px}}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🌸 HerCycle</h1>
+  <p>基于月经周期的个性化饮食·健身·日程管理</p>
+</div>
+<div class="container" id="app">
+  <div id="page-input">
+    <div class="card">
+      <div class="card-title"><span class="icon" style="background:var(--accent)">📋</span> 个人信息</div>
+      <div class="form-row">
+        <div class="form-group"><label>身高 (cm)</label><input type="number" id="height" placeholder="160" min="140" max="200"></div>
+        <div class="form-group"><label>体重 (kg)</label><input type="number" id="weight" placeholder="55" min="35" max="150"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>年龄</label><input type="number" id="age" placeholder="28" min="12" max="60"></div>
+        <div class="form-group"><label>周期天数</label>
+          <select id="cycle-length">
+            <option value="25">25天</option><option value="26">26天</option><option value="27">27天</option>
+            <option value="28" selected>28天</option><option value="29">29天</option><option value="30">30天</option>
+            <option value="31">31天</option><option value="32">32天</option><option value="35">35天</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label>末次月经第一天</label><input type="date" id="last-period"></div>
+      <div class="form-group"><label>经期天数</label>
+        <select id="period-length">
+          <option value="3">3天</option><option value="4">4天</option><option value="5" selected>5天</option>
+          <option value="6">6天</option><option value="7">7天</option>
+        </select>
+      </div>
+      <div class="form-group"><label>健身目标</label>
+        <select id="goal">
+          <option value="lose">减脂塑形</option><option value="maintain">维持体态</option><option value="gain">增肌增重</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="generatePlan()">生成我的方案</button>
+    </div>
+  </div>
+  <div id="page-result" class="hidden">
+    <div class="phase-banner" id="phase-banner">
+      <div class="phase-day" id="phase-day-num"></div>
+      <div class="phase-label" id="phase-label"></div>
+      <div class="phase-desc" id="phase-desc"></div>
+      <div class="phase-bar" id="phase-bar"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon" style="background:var(--accent3)">📊</span> 身体概况</div>
+      <div class="bmi-display">
+        <div class="bmi-value" id="bmi-value"></div>
+        <div class="bmi-label">BMI 指数</div>
+        <div class="bmi-category" id="bmi-category"></div>
+      </div>
+      <div style="margin-top:12px">
+        <div class="nutrient"><div class="nutrient-header"><span>基础代谢</span><span id="bmr-val"></span></div><div class="nutrient-bar"><span id="bmr-bar" style="background:var(--accent2)"></span></div></div>
+        <div class="nutrient"><div class="nutrient-header"><span>每日建议摄入</span><span id="tdee-val"></span></div><div class="nutrient-bar"><span id="tdee-bar" style="background:var(--accent3)"></span></div></div>
+        <div class="nutrient"><div class="nutrient-header"><span>蛋白质目标</span><span id="protein-val"></span></div><div class="nutrient-bar"><span id="protein-bar" style="background:var(--accent)"></span></div></div>
+      </div>
+    </div>
+    <div class="tabs" id="main-tabs">
+      <button class="tab active" data-tab="diet" onclick="switchTab('diet')">🍎 饮食方案</button>
+      <button class="tab" data-tab="workout" onclick="switchTab('workout')">💪 健身方案</button>
+      <button class="tab" data-tab="schedule" onclick="switchTab('schedule')">📅 日程管理</button>
+    </div>
+    <div class="card" id="tab-diet">
+      <div class="card-title"><span class="icon" style="background:var(--accent2)">🍎</span> 今日饮食方案</div>
+      <div id="diet-content"></div>
+      <div class="tip-box" id="diet-tip"></div>
+    </div>
+    <div class="card" id="tab-workout">
+      <div class="card-title"><span class="icon" style="background:var(--phase-luteal)">💪</span> 今日健身方案</div>
+      <div id="workout-content"></div>
+      <div class="tip-box" id="workout-tip"></div>
+    </div>
+    <div class="card" id="tab-schedule">
+      <div class="card-title"><span class="icon" style="background:var(--accent3)">📅</span> 今日日程</div>
+      <div id="schedule-content"></div>
+    </div>
+    <button class="btn" style="background:#EDE8E3;color:var(--sub);margin-top:4px" onclick="goBack()">重新填写信息</button>
+  </div>
+</div>
+<script>
+const PHASES={
+  menstrual:{name:'月经期',color:'var(--phase-menstrual)',desc:'身体正在排毒修复，允许自己慢下来。保暖、补铁、轻运动。',dietFocus:'补铁·保暖·抗炎',kcalMod:0.95,proteinMod:1.1,foods:['红糖姜茶','猪肝/鸭血','深色蔬菜','温热粥品','核桃','黑巧克力(85%)'],avoid:['生冷食物','咖啡因','高盐','酒精'],workoutType:'舒缓修复',intensity:'低',exercises:[{name:'瑜伽拜日式',sets:'15分钟',desc:'温和拉伸，缓解腹部不适'},{name:'散步',sets:'20-30分钟',desc:'户外慢走，促进血液循环'},{name:'猫牛式',sets:'8次×3组',desc:'缓解腰背酸痛'}],dietTip:'💡 本期重点：补充流失的铁和镁，选择温热食物促进血液循环。可以适当吃黑巧克力缓解情绪，避免生冷加重痛经。'},
+  follicular:{name:'卵泡期',color:'var(--phase-follicular)',desc:'能量上升期！雌激素攀升，代谢加快，适合逐步加量。',dietFocus:'高蛋白·复合碳水·抗氧化',kcalMod:1.05,proteinMod:1.2,foods:['鸡胸肉/鱼肉','糙米/燕麦','西兰花/蓝莓','鸡蛋','牛油果','豆制品'],avoid:['精制糖','油炸食品','过度加工食品'],workoutType:'力量递增',intensity:'中高',exercises:[{name:'深蹲',sets:'12次×4组',desc:'自重或哑铃，激活大肌群'},{name:'俯卧撑',sets:'8-12次×3组',desc:'跪姿或标准，上肢力量'},{name:'臀桥',sets:'15次×3组',desc:'激活臀肌，改善骨盆'},{name:'平板支撑',sets:'30秒×3组',desc:'核心稳定，躯干强化'}],dietTip:'💡 本期重点：能量充足，适合增加蛋白质和复合碳水。这是增肌的黄金期，力量训练后30分钟内补充蛋白质效果最佳。'},
+  ovulation:{name:'排卵期',color:'var(--phase-ovulation)',desc:'能量巅峰！雌激素和睾酮双高，最强运动表现期。',dietFocus:'优质蛋白·健康脂肪·高纤维',kcalMod:1.0,proteinMod:1.3,foods:['三文鱼/鳕鱼','坚果混合','藜麦','绿叶蔬菜','酸奶','亚麻籽'],avoid:['高糖零食','碳酸饮料','精制碳水'],workoutType:'高强度冲刺',intensity:'高',exercises:[{name:'HIIT训练',sets:'20分钟',desc:'30秒冲刺+30秒休息，8-10组'},{name:'弓步蹲跳',sets:'10次×3组',desc:'爆发力训练，燃脂高效'},{name:'波比跳',sets:'8次×3组',desc:'全身复合动作'},{name:'登山者',sets:'20次×3组',desc:'核心+心肺，高效燃脂'}],dietTip:'💡 本期重点：身体承受力最强，可以挑战更高强度。训练后注意补充优质蛋白和健康脂肪，帮助肌肉修复。'},
+  luteal:{name:'黄体期',color:'var(--phase-luteal)',desc:'代谢升高但精力下降，易水肿和情绪波动，温和减量。',dietFocus:'补镁·复合碳水·低钠',kcalMod:1.02,proteinMod:1.0,foods:['南瓜籽/杏仁','红薯/紫薯','深海鱼','香蕉','黑巧克力','温热汤品'],avoid:['高钠食品','过量咖啡因','辛辣刺激','酒精'],workoutType:'温和维持',intensity:'低中',exercises:[{name:'普拉提',sets:'25分钟',desc:'核心控制，低冲击全身训练'},{name:'快走/慢跑',sets:'25分钟',desc:'中等心率，维持心肺功能'},{name:'拉伸放松',sets:'15分钟',desc:'全身筋膜放松，缓解紧张'}],dietTip:'💡 本期重点：黄体期代谢比卵泡期高5-10%，但容易水肿和情绪低落。多补充镁（南瓜籽、黑巧）和维生素B6，减少钠盐摄入。想吃甜食选红薯、香蕉。'}
+};
+const MEALS={
+  menstrual:{breakfast:{items:'红糖姜枣粥 + 水煮蛋1个 + 蒸南瓜',kcal:350,tip:'温热开胃，姜驱寒'},lunch:{items:'番茄猪肝汤 + 糙米饭 + 清炒菠菜',kcal:480,tip:'补铁补维C，促进铁吸收'},dinner:{items:'山药排骨汤 + 杂粮饭 + 木耳炒蛋',kcal:420,tip:'温补为主，好消化'},snack:{items:'黑巧克力2小块 + 核桃3个 + 红枣3颗',kcal:150,tip:'抗炎+补铁+满足甜食欲'}},
+  follicular:{breakfast:{items:'燕麦酸奶碗 + 蓝莓 + 水煮蛋2个',kcal:380,tip:'高蛋白启动，抗氧化'},lunch:{items:'鸡胸肉沙拉 + 糙米饭 + 西兰花',kcal:520,tip:'高蛋白+复合碳水，支撑训练'},dinner:{items:'清蒸鲈鱼 + 藜麦 + 凉拌豆腐',kcal:450,tip:'优质蛋白+植物蛋白双补'},snack:{items:'苹果1个 + 杏仁10颗 + 豆浆1杯',kcal:180,tip:'训练后30min内补充最佳'}},
+  ovulation:{breakfast:{items:'全麦吐司+牛油果+三文鱼 + 黑咖啡',kcal:400,tip:'健康脂肪+蛋白，高能启动'},lunch:{items:'牛肉藜麦碗 + 混合蔬菜 + 橄榄油',kcal:550,tip:'高蛋白高纤维，支持高强度'},dinner:{items:'虾仁炒西芹 + 紫薯 + 紫菜蛋花汤',kcal:420,tip:'低脂高蛋白，修复不增脂'},snack:{items:'希腊酸奶 + 亚麻籽 + 蓝莓',kcal:160,tip:'益生菌+Omega3，训练恢复'}},
+  luteal:{breakfast:{items:'紫薯燕麦粥 + 鸡蛋1个 + 香蕉',kcal:360,tip:'复合碳水稳血糖，缓解情绪'},lunch:{items:'清炒虾仁 + 糙米饭 + 海带汤',kcal:490,tip:'低钠高碘，减少水肿'},dinner:{items:'南瓜浓汤 + 全麦面包 + 蒸鸡胸',kcal:400,tip:'温热低钠，补镁助眠'},snack:{items:'黑巧克力2块 + 南瓜籽1小把 + 温牛奶',kcal:170,tip:'补镁抗压，改善睡眠质量'}}
+};
+function generatePlan(){
+  const h=parseFloat(document.getElementById('height').value);
+  const w=parseFloat(document.getElementById('weight').value);
+  const a=parseInt(document.getElementById('age').value);
+  const cycleLen=parseInt(document.getElementById('cycle-length').value);
+  const lastPeriod=document.getElementById('last-period').value;
+  const periodLen=parseInt(document.getElementById('period-length').value);
+  const goal=document.getElementById('goal').value;
+  if(!h||!w||!a||!lastPeriod){alert('请填写完整信息');return}
+  const last=new Date(lastPeriod);
+  const today=new Date();
+  const diffDays=Math.floor((today-last)/86400000);
+  const cycleDay=((diffDays%cycleLen)+cycleLen)%cycleLen+1;
+  let phase;
+  if(cycleDay<=periodLen)phase='menstrual';
+  else if(cycleDay<=Math.floor(cycleLen*0.46))phase='follicular';
+  else if(cycleDay<=Math.floor(cycleLen*0.54))phase='ovulation';
+  else phase='luteal';
+  const bmi=w/((h/100)**2);
+  let bmiCat,bmiColor;
+  if(bmi<18.5){bmiCat='偏瘦';bmiColor='var(--accent3)'}
+  else if(bmi<24){bmiCat='正常';bmiColor='var(--accent2)'}
+  else if(bmi<28){bmiCat='偏胖';bmiColor='var(--accent)'}
+  else{bmiCat='肥胖';bmiColor='var(--phase-menstrual)'}
+  const bmr=Math.round(10*w+6.25*h-5*a-161);
+  let tMul;if(goal==='lose')tMul=0.82;else if(goal==='gain')tMul=1.15;else tMul=1.0;
+  const baseTdee=Math.round(bmr*1.4);
+  const tdee=Math.round(baseTdee*PHASES[phase].kcalMod*tMul);
+  const protein=Math.round(w*PHASES[phase].proteinMod*(goal==='gain'?1.3:goal==='lose'?1.1:1.0));
+  const p=PHASES[phase];
+  document.getElementById('phase-banner').style.background=p.color;
+  document.getElementById('phase-day-num').textContent='Day '+cycleDay;
+  document.getElementById('phase-label').textContent=p.name;
+  document.getElementById('phase-desc').textContent=p.desc;
+  const bar=document.getElementById('phase-bar');bar.innerHTML='';
+  ['menstrual','follicular','ovulation','luteal'].forEach(ph=>{const sp=document.createElement('span');sp.style.background=PHASES[ph].color;if(ph===phase)sp.className='active';bar.appendChild(sp)});
+  document.getElementById('bmi-value').textContent=bmi.toFixed(1);
+  const catEl=document.getElementById('bmi-category');catEl.textContent=bmiCat;catEl.style.background=bmiColor;
+  document.getElementById('bmr-val').textContent=bmr+' kcal';document.getElementById('bmr-bar').style.width=Math.min(bmr/2000*100,100)+'%';
+  document.getElementById('tdee-val').textContent=tdee+' kcal';document.getElementById('tdee-bar').style.width=Math.min(tdee/2500*100,100)+'%';
+  document.getElementById('protein-val').textContent=protein+'g';document.getElementById('protein-bar').style.width=Math.min(protein/120*100,100)+'%';
+  const meals=MEALS[phase];
+  const goalLabel=goal==='lose'?'减脂':goal==='gain'?'增肌':'维持';
+  let dH='<div style="font-size:13px;color:var(--sub);margin-bottom:10px">🎯 本期重点：'+p.dietFocus+' · '+goalLabel+'模式 · 约'+tdee+'kcal/日</div>';
+  const mNames={breakfast:'🌅 早餐',lunch:'☀️ 午餐',dinner:'🌙 晚餐',snack:'🍪 加餐'};
+  Object.keys(mNames).forEach(k=>{const m=meals[k];dH+='<div class="meal"><div class="meal-header"><span class="meal-time">'+mNames[k]+'</span><span class="meal-kcal">'+m.kcal+'kcal</span></div><div class="meal-items">'+m.items+'</div><div class="meal-tip">'+m.tip+'</div></div>'});
+  dH+='<div style="margin-top:12px"><div style="font-size:13px;font-weight:700;margin-bottom:6px">✅ 推荐食物</div><div style="font-size:13px;color:var(--accent2)">'+p.foods.join(' · ')+'</div></div>';
+  dH+='<div style="margin-top:8px"><div style="font-size:13px;font-weight:700;margin-bottom:6px">⚠️ 少吃避免</div><div style="font-size:13px;color:var(--phase-menstrual)">'+p.avoid.join(' · ')+'</div></div>';
+  document.getElementById('diet-content').innerHTML=dH;
+  document.getElementById('diet-tip').innerHTML=p.dietTip;
+  let wH='<div style="font-size:13px;color:var(--sub);margin-bottom:10px">🏋️ '+p.workoutType+' · 强度：'+p.intensity+' · 约'+Math.round(goal==='gain'?50:goal==='lose'?40:30)+'分钟</div>';
+  p.exercises.forEach(ex=>{wH+='<div class="workout-item"><div class="workout-name">'+ex.name+'</div><div class="workout-meta">'+ex.desc+'</div><div class="workout-sets"><span class="set-tag">'+ex.sets+'</span></div></div>'});
+  if(goal==='lose'){wH+='<div class="workout-item"><div class="workout-name">🔥 额外：空腹有氧（选做）</div><div class="workout-meta">晨起快走20分钟，加速脂肪代谢</div></div>'}
+  document.getElementById('workout-content').innerHTML=wH;
+  document.getElementById('workout-tip').innerHTML='💡 本期运动建议：'+p.desc+' | 强度'+p.intensity+'，不要勉强，身体信号优先。'+(goal==='lose'?'减脂期保持热量缺口即可，不过度节食。':goal==='gain'?'增肌期训练后必须补充蛋白质，休息日也要吃够。':'');
+  let sH='';const sched=getSchedule(phase,goal,tdee,cycleDay,periodLen);
+  sched.forEach(s=>{sH+='<div class="schedule-item"><div class="schedule-time">'+s.time+'</div><div class="schedule-content"><div class="schedule-title">'+s.title+'</div><div class="schedule-desc">'+s.desc+'</div></div></div>'});
+  document.getElementById('schedule-content').innerHTML=sH;
+  document.getElementById('page-input').classList.add('hidden');
+  document.getElementById('page-result').classList.remove('hidden');
+}
+function getSchedule(phase,goal,tdee,cd,pl){
+  const items=[];
+  if(phase==='menstrual'){
+    items.push({time:'07:00',title:'起床 · 温水+红糖姜茶',desc:'暖宫驱寒，唤醒代谢'});
+    items.push({time:'07:30',title:'舒缓拉伸 10分钟',desc:'猫牛式+婴儿式，缓解腰腹不适'});
+    items.push({time:'08:00',title:'早餐 · 补铁温热',desc:'约'+Math.round(tdee*0.3)+'kcal'});
+    items.push({time:'10:30',title:'加餐 · 黑巧+核桃',desc:'补镁抗炎，稳定情绪'});
+    items.push({time:'12:00',title:'午餐 · 补铁为主',desc:'约'+Math.round(tdee*0.35)+'kcal'});
+    items.push({time:'14:00',title:'散步 20分钟',desc:'户外慢走，促进循环，不勉强'});
+    items.push({time:'15:30',title:'加餐 · 红枣+温牛奶',desc:'补铁补钙'});
+    items.push({time:'18:30',title:'晚餐 · 温补好消化',desc:'约'+Math.round(tdee*0.3)+'kcal'});
+    items.push({time:'21:00',title:'热水泡脚 15分钟',desc:'促进血液循环，助眠'});
+  }else if(phase==='follicular'){
+    items.push({time:'07:00',title:'起床 · 温水',desc:'唤醒代谢'});
+    items.push({time:'07:15',title:'晨练 · 力量训练',desc:'深蹲+俯卧撑+臀桥+平板，约35分钟'});
+    items.push({time:'08:00',title:'早餐 · 高蛋白',desc:'约'+Math.round(tdee*0.3)+'kcal，训练后30min内补充'});
+    items.push({time:'10:30',title:'加餐 · 坚果+水果',desc:'补充能量'});
+    items.push({time:'12:00',title:'午餐 · 蛋白+复合碳水',desc:'约'+Math.round(tdee*0.35)+'kcal'});
+    items.push({time:'15:30',title:'加餐 · 酸奶+豆浆',desc:'植物蛋白+益生菌'});
+    items.push({time:'18:30',title:'晚餐 · 优质蛋白',desc:'约'+Math.round(tdee*0.3)+'kcal'});
+    items.push({time:'20:00',title:'泡沫轴放松 10分钟',desc:'筋膜放松，加速恢复'});
+  }else if(phase==='ovulation'){
+    items.push({time:'06:45',title:'起床 · 温水+黑咖啡',desc:'咖啡因提升运动表现'});
+    items.push({time:'07:00',title:'晨练 · HIIT高强度',desc:'冲刺期，20分钟HIIT+力量，约45分钟'});
+    items.push({time:'08:00',title:'早餐 · 高能启动',desc:'约'+Math.round(tdee*0.3)+'kcal，健康脂肪+蛋白'});
+    items.push({time:'10:30',title:'加餐 · 希腊酸奶',desc:'蛋白+益生菌'});
+    items.push({time:'12:00',title:'午餐 · 高蛋白高纤维',desc:'约'+Math.round(tdee*0.35)+'kcal'});
+    items.push({time:'15:30',title:'加餐 · 水果+亚麻籽',desc:'抗氧化+Omega3'});
+    items.push({time:'18:30',title:'晚餐 · 低脂修复',desc:'约'+Math.round(tdee*0.3)+'kcal'});
+    items.push({time:'20:00',title:'拉伸 15分钟',desc:'全身拉伸，防止肌肉僵硬'});
+  }else{
+    items.push({time:'07:00',title:'起床 · 温水',desc:'温和开启'});
+    items.push({time:'07:20',title:'晨练 · 普拉提/快走',desc:'中等强度25-30分钟，不勉强'});
+    items.push({time:'08:00',title:'早餐 · 复合碳水',desc:'约'+Math.round(tdee*0.3)+'kcal，稳血糖'});
+    items.push({time:'10:30',title:'加餐 · 香蕉+南瓜籽',desc:'补镁抗压'});
+    items.push({time:'12:00',title:'午餐 · 低钠高碘',desc:'约'+Math.round(tdee*0.35)+'kcal，减水肿'});
+    items.push({time:'15:30',title:'加餐 · 黑巧+温牛奶',desc:'补镁助眠，满足甜食欲'});
+    items.push({time:'18:30',title:'晚餐 · 温热低钠',desc:'约'+Math.round(tdee*0.3)+'kcal'});
+    items.push({time:'21:00',title:'拉伸+泡脚 15分钟',desc:'放松身心，改善睡眠'});
+  }
+  return items;
+}
+function switchTab(tab){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector('.tab[data-tab="'+tab+'"]').classList.add('active');
+  ['diet','workout','schedule'].forEach(t=>{document.getElementById('tab-'+t).style.display=t===tab?'block':'none'});
+}
+function goBack(){
+  document.getElementById('page-result').classList.add('hidden');
+  document.getElementById('page-input').classList.remove('hidden');
+}
+const d=new Date();d.setDate(d.getDate()-14);
+document.getElementById('last-period').value=d.toISOString().split('T')[0];
+switchTab('diet');
+</script>
+</body>
+</html>
