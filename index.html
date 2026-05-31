@@ -269,7 +269,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-
   </div>
   <div id="page-result" class="hidden">
     <div class="phase-banner" id="phase-banner"><div class="phase-day" id="phase-day-num"></div><div class="phase-label" id="phase-label"></div><div class="phase-desc" id="phase-desc"></div><div class="phase-bar" id="phase-bar"></div></div>
-    <div class="card"><div class="card-title"><span class="icon" style="background:var(--accent3)">📊</span> 身体概况</div><div class="bmi-display"><div class="bmi-value" id="bmi-value"></div><div class="bmi-label">BMI 指数</div><div class="bmi-category" id="bmi-category"></div></div><div style="margin-top:12px"><div class="nutrient"><div class="nutrient-header"><span>基础代谢</span><span id="bmr-val"></span></div><div class="nutrient-bar"><span id="bmr-bar" style="background:var(--accent2)"></span></div></div><div class="nutrient"><div class="nutrient-header"><span>每日建议摄入</span><span id="tdee-val"></span></div><div class="nutrient-bar"><span id="tdee-bar" style="background:var(--accent3)"></span></div></div><div class="nutrient"><div class="nutrient-header"><span>蛋白质目标</span><span id="protein-val"></span></div><div class="nutrient-bar"><span id="protein-bar" style="background:var(--accent)"></span></div></div></div></div>
+    <div class="card"><div class="card-title"><span class="icon" style="background:var(--accent3)">📊</span> 身体概况</div><div class="bmi-display"><div class="bmi-value" id="bmi-value"></div><div class="bmi-label">BMI 指数</div><div class="bmi-category" id="bmi-category"></div><div id="body-summary" style="font-size:12px;color:var(--sub);margin-top:8px;line-height:1.5;text-align:left;padding:0 4px"></div></div><div style="margin-top:12px"><div class="nutrient"><div class="nutrient-header"><span>基础代谢</span><span id="bmr-val"></span></div><div class="nutrient-bar"><span id="bmr-bar" style="background:var(--accent2)"></span></div></div><div class="nutrient"><div class="nutrient-header"><span>每日建议摄入</span><span id="tdee-val"></span></div><div class="nutrient-bar"><span id="tdee-bar" style="background:var(--accent3)"></span></div></div><div class="nutrient"><div class="nutrient-header"><span>蛋白质目标</span><span id="protein-val"></span></div><div class="nutrient-bar"><span id="protein-bar" style="background:var(--accent)"></span></div></div></div></div>
     <div class="tabs" style="display:none"><button class="tab active" data-tab="diet" onclick="switchTab('diet')">🍎 饮食方案</button><button class="tab" data-tab="workout" onclick="switchTab('workout')">💪 健身方案</button><button class="tab" data-tab="schedule" onclick="switchTab('schedule')">📅 日程管理</button></div>
     
     <div class="card" id="tab-diet"><div class="card-title"><span class="icon" style="background:var(--accent2)">🍎</span> 今日饮食方案</div><div id="diet-content"></div><div class="tip-box" id="diet-tip"></div>
@@ -286,8 +286,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-
       </div>
     </div>
     <div class="card" id="tab-workout"><div class="card-title"><span class="icon" style="background:var(--phase-luteal)">💪</span> 今日健身方案</div>
+      <!-- V6: 训练进度 -->
+      <div class="workout-progress" style="margin-top:14px">
+        <div class="workout-progress-header">
+          <span class="workout-progress-title">今日训练进度</span>
+          <span class="workout-progress-count" id="workout-progress-count">0/0 已完成</span>
+        </div>
+        <div class="workout-progress-bar"><div class="workout-progress-fill" id="workout-progress-fill" style="width:0%"></div></div>
+      </div>
+      <div class="encouragement" id="encouragement"></div>
+      <div id="workout-content"></div>
+      <button class="checkin-trigger hidden" id="checkin-trigger" onclick="openCheckin()">✅ 打卡完成 · 分享成果</button>
       <!-- V6: 跟练博主区域 -->
-      <div class="blogger-section">
+      <div class="blogger-section" style="margin-top:16px">
         <div class="blogger-label">🎯 跟练博主</div>
         <div class="fav-section" id="fav-section" style="display:none">
           <div class="fav-section-label">⭐ 我的收藏</div>
@@ -307,7 +318,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-
         </div>
         <div class="blogger-cards" id="blogger-cards"></div>
       </div>
-      <!-- V6: 触发视频按钮（在div外面） -->
+      <!-- V6: 触发视频按钮 -->
       <button class="demo-bilibili-btn" style="margin-top:12px" onclick="document.getElementById('video-section').style.display='block';this.style.display='none'">📺 嵌入视频跟练</button>
       <!-- V6: 视频嵌入区（默认隐藏） -->
       <div id="video-section" style="display:none;margin-top:10px">
@@ -330,17 +341,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-
           <div class="history-toggle" id="history-toggle" onclick="toggleHistory()" style="display:none">展开全部</div>
         </div>
       </div>
-      <!-- V6: 训练进度 -->
-      <div class="workout-progress" style="margin-top:14px">
-        <div class="workout-progress-header">
-          <span class="workout-progress-title">今日训练进度</span>
-          <span class="workout-progress-count" id="workout-progress-count">0/0 已完成</span>
-        </div>
-        <div class="workout-progress-bar"><div class="workout-progress-fill" id="workout-progress-fill" style="width:0%"></div></div>
-      </div>
-      <div class="encouragement" id="encouragement"></div>
-      <div id="workout-content"></div>
-      <button class="checkin-trigger hidden" id="checkin-trigger" onclick="openCheckin()">✅ 打卡完成 · 分享成果</button>
     </div>
     <div class="card" id="tab-schedule">
       <div class="card-title"><span class="icon" style="background:var(--accent3)">📅</span> 日程管理</div>
@@ -1298,7 +1298,20 @@ function renderWorkoutContent(){
   const it=ph.it[CP.goal]||ph.it.maintain||'';
   const exs=ph.exercises[CP.goal]||ph.exercises.maintain;
   const duration=CP.goal==='gain'?50:CP.goal==='lose'?40:CP.goal==='shape'?45:30;
-  let wH='<div style="font-size:13px;color:var(--sub);margin-bottom:10px">🏋️ '+wt+' · 强度：'+it+' · 约'+duration+'分钟</div>';
+  const gMap={lose:'减脂',gain:'增肌',shape:'塑形',maintain:'维持'};const gL=gMap[CP.goal]||'维持';
+  let wtDesc,wtTip;
+  if(CP.goal==='lose'){wtDesc='燃脂为主·中低强度有氧+轻力量';wtTip='有氧占比60%+，力量训练保持肌肉量防代谢下降，心率控制在燃脂区间。';}
+  else if(CP.goal==='gain'){wtDesc='力量为主·大重量复合动作';wtTip='复合动作优先（深蹲/硬拉/卧推），组间休息90-120秒，训练后30分钟内补蛋白。';}
+  else if(CP.goal==='shape'){wtDesc='线条为主·小重量多组数+拉伸';wtTip='中等重量高次数（12-15次），配合拉伸和弹力带雕刻线条，不追求大重量。';}
+  else{wtDesc='均衡为主·适度活动保持活力';wtTip='有氧与力量均衡搭配，注重运动乐趣和长期坚持，不追求极限。';}
+  let wH='<div style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:12px">';
+  wH+='<div style="font-size:15px;font-weight:700;color:var(--accent);margin-bottom:4px">🏋️ '+gL+'模式 · '+wtDesc+'</div>';
+  wH+='<div style="font-size:12px;color:var(--sub);line-height:1.5">'+wtTip+'</div>';
+  wH+='<div style="display:flex;gap:8px;margin-top:8px">';
+  wH+='<div style="flex:1;text-align:center;padding:6px 4px;background:var(--card);border-radius:8px"><div style="font-size:10px;color:var(--sub)">强度</div><div style="font-size:14px;font-weight:700;color:var(--accent)">'+it+'</div></div>';
+  wH+='<div style="flex:1;text-align:center;padding:6px 4px;background:var(--card);border-radius:8px"><div style="font-size:10px;color:var(--sub)">时长</div><div style="font-size:14px;font-weight:700;color:var(--accent2)">~'+duration+'min</div></div>';
+  wH+='<div style="flex:1;text-align:center;padding:6px 4px;background:var(--card);border-radius:8px"><div style="font-size:10px;color:var(--sub)">动作</div><div style="font-size:14px;font-weight:700;color:var(--accent3)">'+exs.length+'个</div></div>';
+  wH+='</div></div>';
   exs.forEach((e,i)=>{const key=CP.phase+'-'+i;const isChecked=CP.completedExercises.includes(key);wH+='<div class="workout-item"><div class="exercise-checkbox'+(isChecked?' checked':'')+'" data-idx="'+i+'" onclick="toggleExercise('+i+')"></div><div class="workout-item-right"><div class="workout-name">'+e.n+'</div><div class="workout-meta">'+e.d+'</div><div class="workout-sets"><span class="set-tag">'+e.s+'</span></div><div class="workout-item-actions"><button class="demo-btn" onclick="openDemoModal(\''+e.n+'\','+JSON.stringify(e.steps).replace(/"/g,'&quot;')+')">▶ 演示</button></div></div></div>';});
   if(CP.goal==='lose')wH+='<div class="workout-item"><div class="exercise-checkbox" data-idx="-1" onclick="toggleExercise(-1)"></div><div class="workout-item-right"><div class="workout-name">🔥 空腹有氧（选做）</div><div class="workout-meta">晨起快走20分钟</div><div class="workout-item-actions"><button class="demo-btn" onclick="openDemoModal(\'空腹有氧\',[\'起床后喝一杯温水\',\'选择平坦路线，快走步频100-120步/分钟\',\'保持能说话的配速，微微出汗\',\'快走20分钟后拉伸5分钟\'])">▶ 演示</button></div></div></div>';
   if(CP.goal==='shape')wH+='<div class="workout-item"><div class="exercise-checkbox" data-idx="-2" onclick="toggleExercise(-2)"></div><div class="workout-item-right"><div class="workout-name">🎯 弹力带臀腿（选做）</div><div class="workout-meta">侧抬腿15×3+蚌式开合15×3</div><div class="workout-item-actions"><button class="demo-btn" onclick="openDemoModal(\'弹力带臀腿\',[\'侧抬腿：侧卧，弹力带套于大腿上方，缓慢抬起到最高点\',\'顶部停顿2秒，缓慢放下（15次×3组）\',\'蚌式开合：侧卧屈膝，弹力带套于大腿上方\',\'膝盖打开至最高点停顿2秒，缓慢合拢（15次×3组）\'])">▶ 演示</button></div></div></div>';
@@ -1425,14 +1438,44 @@ function generatePlan(){
   phases.forEach(x=>{const sp=document.createElement('span');sp.style.background=PH[x].ch;if(x===ph)sp.className='active';bar.appendChild(sp);});
   document.getElementById('bmi-value').textContent=bmi.toFixed(1);
   const catEl=document.getElementById('bmi-category');catEl.textContent=bC;catEl.style.background=bCo;
+  // 一句话身体状态总结
+  let bodySummary='';
+  if(bmi<18.5){bodySummary='体重偏轻，建议适当增加营养摄入，注重蛋白质和健康脂肪补充。';}
+  else if(bmi<24){bodySummary='体重正常，保持均衡饮食和规律运动即可。';}
+  else if(bmi<28){bodySummary='体重略高，建议控制总热量、增加蛋白质比例，配合规律运动。';}
+  else{bodySummary='体重偏高，优先调整饮食结构、制造适度热量缺口，循序渐进增加运动量。';}
+  if(goal==='lose'&&bmi>=24){bodySummary='当前体重偏高，减脂方向正确，建议每日制造300-500kcal缺口，蛋白质提到1.8g/kg+保肌肉。';}
+  else if(goal==='lose'&&bmi<20){bodySummary='体重已偏轻，不建议继续减脂，建议切换到塑形或维持模式，增肌提升代谢。';}
+  else if(goal==='gain'&&bmi<20){bodySummary='体重偏轻正是增肌好时机，吃够碳水和蛋白质，力量训练优先复合动作。';}
+  else if(goal==='shape'&&bmi>=18.5&&bmi<24){bodySummary='体重正常是塑形最佳起点，控制饮食精度+针对性训练，线条效果最明显。';}
+  const summaryEl=document.getElementById('body-summary');
+  if(summaryEl)summaryEl.textContent='💡 '+bodySummary;
   document.getElementById('bmr-val').textContent=bmr+' kcal';document.getElementById('bmr-bar').style.width=Math.min(bmr/2000*100,100)+'%';
   document.getElementById('tdee-val').textContent=tdee+' kcal';document.getElementById('tdee-bar').style.width=Math.min(tdee/2500*100,100)+'%';
   document.getElementById('protein-val').textContent=protein+'g';document.getElementById('protein-bar').style.width=Math.min(protein/120*100,100)+'%';
   const meals=ML[ph][goal]||ML[ph].maintain;
   const gMap={lose:'减脂',gain:'增肌',shape:'塑形',maintain:'维持'};const gL=gMap[goal]||'维持';
-  let dH='<div style="font-size:13px;color:var(--sub);margin-bottom:10px">🎯 本期重点：'+p.df+' · '+gL+'模式 · 约'+tdee+'kcal/日</div>';
+  // 宏观营养素配比（碳水/蛋白质/脂肪 比例和克数）
+  let cr,pr,fr,goalDesc,goalTip;
+  if(goal==='lose'){cr=0.35;pr=0.35;fr=0.30;goalDesc='低碳水·高蛋白·控制总热量';goalTip='每日缺口约'+Math.round(bmr*1.4*0.18)+'kcal，碳水降到35%以下，蛋白质提到1.8g/kg+';}
+  else if(goal==='gain'){cr=0.50;pr=0.30;fr=0.20;goalDesc='高碳水·高蛋白·热量盈余';goalTip='盈余15%支持肌肉合成，碳水占50%+提供训练能量，蛋白质2.2g/kg+。';}
+  else if(goal==='shape'){cr=0.40;pr=0.30;fr=0.30;goalDesc='中碳水·高蛋白·精准塑形';goalTip='蛋白质1.6g/kg保线条，碳水适量支撑训练，脂肪选优质来源。';}
+  else{cr=0.45;pr=0.25;fr=0.30;goalDesc='均衡搭配·灵活选择';goalTip='三大营养素均衡分配，注重食物多样性和微量营养。';}
+  const carbG=Math.round(tdee*cr/4),proteinG2=Math.round(tdee*pr/4),fatG=Math.round(tdee*fr/9);
+  let dH='<div style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:12px">';
+  dH+='<div style="font-size:15px;font-weight:700;color:var(--accent);margin-bottom:8px">🎯 '+gL+'模式 · '+goalDesc+'</div>';
+  dH+='<div style="font-size:12px;color:var(--sub);line-height:1.5;margin-bottom:10px">'+goalTip+'</div>';
+  dH+='<div style="display:flex;gap:8px;margin-bottom:8px">';
+  dH+='<div style="flex:1;text-align:center;padding:8px 4px;background:var(--card);border-radius:8px"><div style="font-size:11px;color:var(--sub)">碳水</div><div style="font-size:16px;font-weight:700;color:#D4A574">'+carbG+'g</div><div style="font-size:10px;color:var(--sub)">'+Math.round(cr*100)+'%</div></div>';
+  dH+='<div style="flex:1;text-align:center;padding:8px 4px;background:var(--card);border-radius:8px"><div style="font-size:11px;color:var(--sub)">蛋白质</div><div style="font-size:16px;font-weight:700;color:var(--accent)">'+proteinG2+'g</div><div style="font-size:10px;color:var(--sub)">'+Math.round(pr*100)+'%</div></div>';
+  dH+='<div style="flex:1;text-align:center;padding:8px 4px;background:var(--card);border-radius:8px"><div style="font-size:11px;color:var(--sub)">脂肪</div><div style="font-size:16px;font-weight:700;color:var(--accent2)">'+fatG+'g</div><div style="font-size:10px;color:var(--sub)">'+Math.round(fr*100)+'%</div></div>';
+  dH+='</div>';
+  dH+='<div style="font-size:12px;color:var(--sub)">每日目标：约'+tdee+'kcal · 蛋白质≥'+protein+'g</div>';
+  dH+='</div>';
   const mN={breakfast:'🌅 早餐',lunch:'☀️ 午餐',dinner:'🌙 晚餐',snack:'🍪 加餐'};
-  Object.keys(mN).forEach(k=>{const m=meals[k];if(m){dH+='<div class="meal"><div class="meal-header"><span class="meal-time">'+mN[k]+'</span><span class="meal-kcal">'+m.kcal+'kcal</span></div><div class="meal-items">'+m.items+'</div><div class="meal-tip">'+m.tip+'</div></div>'}});
+  let totalKcal=0;
+  Object.keys(mN).forEach(k=>{const m=meals[k];if(m){totalKcal+=m.kcal;dH+='<div class="meal"><div class="meal-header"><span class="meal-time">'+mN[k]+'</span><span class="meal-kcal">'+m.kcal+'kcal</span></div><div class="meal-items">'+m.items+'</div><div class="meal-tip">'+m.tip+'</div></div>'}});
+  if(totalKcal>0){dH+='<div style="text-align:right;font-size:12px;color:var(--sub);margin-top:4px">三餐合计 ≈ '+totalKcal+'kcal</div>';}
   dH+='<div style="margin-top:12px"><div style="font-size:13px;font-weight:700;margin-bottom:6px">✅ 推荐</div><div style="font-size:13px;color:var(--accent2)">'+p.f.join(' · ')+'</div></div>';
   dH+='<div style="margin-top:8px"><div style="font-size:13px;font-weight:700;margin-bottom:6px">⚠️ 少吃</div><div style="font-size:13px;color:var(--phase-menstrual)">'+p.a.join(' · ')+'</div></div>';
   document.getElementById('diet-content').innerHTML=dH;
