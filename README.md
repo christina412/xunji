@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/icon-color.svg" alt="HerCycle Logo" width="120"/></p>
+
 # HerCycle
 
 **基于女性生理周期的个性化饮食·健身·日程管理助手**
