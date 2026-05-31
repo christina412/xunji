@@ -1,2 +1,132 @@
 # HerCycle
-HerCycle is a diet, fitness, and schedule management tool based on the female menstrual cycle.
+
+**基于女性生理周期的个性化饮食·健身·日程管理助手**
+
+[![Deploy](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen)](https://christina412.github.io/hercycle/) [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE) [![Version](https://img.shields.io/badge/Version-6.4-orange)]()
+
+👉 **[立即体验](https://christina412.github.io/hercycle/)**
+
+---
+
+## ✨ 功能概览
+
+### 🩸 智能周期识别
+- 输入末次月经日期 + 周期天数，自动推算当前所处阶段
+- 支持 21-90 天周期及 PCOS/不规律周期独立适配
+- 四阶段可视化进度条：月经期 → 卵泡期 → 排卵期 → 黄体期
+
+### 🍎 阶段饮食方案
+- 每日三餐 + 加食推荐，精确到食材与份量
+- 自动计算 BMR/TDEE/蛋白质目标
+- 食材采购清单一键生成 + 勾选
+- 不露出具体超市/品牌名
+
+### 💪 阶段健身方案
+- 减脂 / 塑形 / 增肌 / 维持 四大目标独立适配
+- 每个动作附带 B站视频教程链接 + 嵌入播放器
+- 训练进度打卡 + 完成鼓励
+- 博主收藏 + 历史记录
+
+### 📅 日程管理
+- 自动生成日间时间线（起床 → 三餐 → 运动 → 睡眠）
+- 可自定义作息时间
+- 一键导出 `.ics` 日历文件（iOS/Android 通用）
+- 保存打卡海报（含品牌二维码）
+
+### 🔗 分享 & 打卡
+- 打卡海报 Canvas 渲染（含周期信息 + QR码）
+- 三级分享降级：Web Share API → 下载图片 + 复制文案 → 仅复制文案
+- 纯前端 QR 码生成，零外部依赖
+
+---
+
+## 🛠 技术架构
+
+| 项目 | 方案 |
+|------|------|
+| 架构 | 单 HTML 文件，全 CSS/JS 内联，零构建 |
+| 样式 | CSS 变量体系 + 设计系统，支持 Light/Dark 模式 |
+| 数据 | 纯 localStorage，无后端，无账号 |
+| 部署 | GitHub Pages（免费、永久在线） |
+| QR码 | 预计算数据内联 JS，Canvas 绘制 |
+| 视频 | B站嵌入播放器 + CORS 代理获取视频信息 |
+
+### 品牌色系
+
+| 角色 | 色值 | 用途 |
+|------|------|------|
+| 主色 | `#C4736E` | 月经期、品牌强调、渐变起点 |
+| 辅色 | `#5A8C5E` | 卵泡期、健康指标 |
+| 第三色 | `#D4A574` | 排卵期、渐变终点 |
+| 黄体/PCOS | `#8B7BA8` | 黄体期、PCOS 阶段 |
+
+---
+
+## 📁 项目结构
+
+```
+hercycle/
+├── index.html        # 完整应用（HTML + CSS + JS 单文件）
+├── LICENSE           # MIT License
+└── README.md         # 本文档
+```
+
+---
+
+## 🚀 本地运行
+
+```bash
+# 克隆仓库
+git clone https://github.com/christina412/hercycle.git
+cd hercycle
+
+# 直接打开即可，无需构建
+open index.html
+# 或使用本地服务器
+python3 -m http.server 8080
+```
+
+---
+
+## 📋 隐私声明
+
+- **零数据上传**：所有个人数据（身高、体重、周期信息等）仅存储在本地浏览器 localStorage，不会发送至任何服务器
+- **无账号体系**：无需注册、登录，不收集任何个人信息
+- **AI 生成内容声明**：饮食与健身方案由 AI 辅助生成，仅供参考，不构成医疗建议
+- **PCOS 提醒**：周期不规律/疑似 PCOS 用户，建议就医评估激素水平
+
+---
+
+## 📝 版本历史
+
+### V6.4 (2026-06-01)
+- 🎨 UI/UX 视觉体系全面重写：品牌色 `#C4736E` 统一、字号放大、间距舒展
+- 🐛 Banner 间距双重补偿 Bug 修复
+- 🐛 表单页 header 遮挡文案修复
+- 🎨 四角统一圆角 16px、分割线/聚焦色优化
+
+### V6.3
+- 🎨 Header Logo 48px inline SVG
+- 🐛 Banner 上方缺失圆角修复
+
+### V6.2
+- ✅ 打卡图 Canvas QR 码自绘（零外部依赖）
+- ✅ 分享三级降级
+- ✅ .ics 日历导出替代 Google Calendar 跳转
+- ✅ 健身目标 chip 交互 + 说明弹窗
+- ✅ 周期选"不规律"验证修复
+
+### V6.0
+- 🎉 MVP 发布：周期识别 + 饮食/健身/日程三合一
+
+---
+
+## 📄 License
+
+[MIT](LICENSE)
+
+---
+
+<p align="center">
+  <sub>Built with ❤️ by <a href="https://github.com/christina412">christina412</a></sub>
+</p>
