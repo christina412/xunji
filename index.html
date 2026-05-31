@@ -846,7 +846,7 @@ function openCheckin(){
   if(!exercisesHtml)exercisesHtml='<div style="font-size:13px;color:var(--sub);text-align:center;padding:12px">今日完成0项训练，继续加油！</div>';
   document.getElementById('checkin-exercises').innerHTML=exercisesHtml;
   const qrImg=document.getElementById('checkin-qr-img');
-  try{const qc=generateQRCanvas('https://christina412.github.io/hercycle/',160);qrImg.src=qc.toDataURL();qrImg.style.display='block';}catch(e){qrImg.style.display='none';}
+  try{const qc=generateQRCanvas('https://christina412.github.io/xunji/',160);qrImg.src=qc.toDataURL();qrImg.style.display='block';}catch(e){qrImg.style.display='none';}
   document.getElementById('checkin-modal').classList.add('show');
 }
 
@@ -958,7 +958,7 @@ function saveCheckinImage(){
   ctx.fillText(dateStr,115,y+69);
   // Generate QR code via canvas instead of external image (avoids CORS)
   try{
-    const qrCanvas=generateQRCanvas('https://christina412.github.io/hercycle/',56);
+    const qrCanvas=generateQRCanvas('https://christina412.github.io/xunji/',56);
     ctx.drawImage(qrCanvas,38,y+12,56,56);
   }catch(e){
     ctx.fillStyle='#D0D0D0';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText('QR Code',36+30,y+10+35);ctx.textAlign='left';
@@ -966,9 +966,9 @@ function saveCheckinImage(){
   downloadCanvas(canvas);
 }
 
-// Pre-generated QR code for https://christina412.github.io/hercycle/
+// Pre-generated QR code for https://christina412.github.io/xunji/
 const QR_SIZE=29;
-const QR_DATA=["11111110100011111110001111111","10000010000000101011001000001","10111010010110111111101011101","10111010111111100010001011101","10111010101000111000001011101","10000010100101001001101000001","11111110101010101010101111111","00000000110100001101100000000","10001011100100000100111111001","01111001111101111110111111111","00101010011110111100011000001","10111001111000101101000111011","10010110011010101101010000010","11100000100100111000111111111","01110111000011110110101111101","10010100011100110110011100011","10110011001101100101010100010","11001100011010111010101111011","00000011101111111000010100101","00101100111101011100101110011","11001010001101010111111111001","00000000101111111110100010001","11111110110010010011101011101","10000010011100100100100010011","10111010111001110101111111001","10111010010001010110110000001","10111010001111010100010001111","10000010000110000110100011011","11111110111000010100101011010"];
+const QR_DATA=["11111110010011111111001111111","10000010110100111101101000001","10111010011100001001001011101","10111010001111000011001011101","10111010111011110001001011101","10000010010010110111001000001","11111110101010101010101111111","00000000010100000100100000000","10101010000000011101100010010","01001001011011001000001001001","01101011110110101010101110111","10000001010011101100001110010","10111011100110111100011001011","01111100111000101110001001001","00101010111101000000011001011","11001101111100011111010101010","01001110100000000100011101011","00000101001101001100011001101","10110111001010101110100010011","01000101100101110101100111010","10101011011000110110111110000","00000000111010101000100010111","11111110010011000101101011011","10000010001010001101100011000","10111010110100011100111110011","10111010010000000000000110111","10111010101111100010100111001","10000010000001101111101010010","11111110110001011101100010011"];
 
 function generateQRCanvas(text,size){
   const c=document.createElement('canvas');c.width=size;c.height=size;
@@ -998,7 +998,7 @@ function shareCheckin(){
   const motto=document.getElementById('checkin-motto').textContent;
   const shareName=PHASE_SHARE_NAMES[CP.phase]||PH[CP.phase].name;
   const dayNum=document.getElementById('phase-day-num').textContent;
-  const shareText=motto+' — '+shareName+(CP.phase==='pcos'?'':' '+dayNum)+'，坚持周期健身，做自己身体的主人。\n\n🔗 开启你的周期健身之旅：https://christina412.github.io/hercycle/';
+  const shareText=motto+' — '+shareName+(CP.phase==='pcos'?'':' '+dayNum)+'，坚持周期健身，做自己身体的主人。\n\n🔗 开启你的周期健身之旅：https://christina412.github.io/xunji/';
   // Try to get canvas image blob for sharing
   const canvas=document.createElement('canvas');
   const W=420,dpr=2;
@@ -1628,7 +1628,7 @@ async function exportImage(){
   ctx.fillStyle='#fff';rr(ctx,qrX,qrY,qrS,qrS,4);ctx.fill();
   ctx.fillStyle='#B5AFA8';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText('扫码使用',qrX+qrS/2,qrY+qrS+10);ctx.textAlign='left';
   ctx.fillText('循己 · 仅供参考',24,totalH-28);
-  try{const qrC=generateQRCanvas('https://christina412.github.io/hercycle/',qrS*dpr);ctx.drawImage(qrC,qrX,qrY,qrS,qrS);}catch(e){}
+  try{const qrC=generateQRCanvas('https://christina412.github.io/xunji/',qrS*dpr);ctx.drawImage(qrC,qrX,qrY,qrS,qrS);}catch(e){}
   c.toBlob(b=>{const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='循己-日程.png';a.click();URL.revokeObjectURL(u);showToast('✅ 图片已保存')},'image/png');
 }
 
