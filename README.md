@@ -21,9 +21,9 @@
 
 **基于女性生理周期的个性化饮食·健身·日程管理助手**
 
-[![Deploy](https://img.shields.io/badge/Cloudflare%20Pages-Live-brightgreen)](https://xunji.413592499clx.workers.dev/) [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE) [![Version](https://img.shields.io/badge/Version-6.4-orange)]()
+[![Deploy](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen)](https://christina412.github.io/xunji/) [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE) [![Version](https://img.shields.io/badge/Version-6.4-orange)]()
 
-👉 **[立即体验](https://xunji.413592499clx.workers.dev/)**
+👉 **[立即体验](https://christina412.github.io/xunji/)**
 
 ---
 
@@ -78,7 +78,7 @@
 | 架构 | 单 HTML 文件，全 CSS/JS 内联，零构建 |
 | 样式 | CSS 变量体系 + 设计系统，支持 Light/Dark 模式 |
 | 数据 | 纯 localStorage，无后端，无账号 |
-| 部署 | Cloudflare Pages（免费、永久在线） |
+| 部署 | GitHub Pages（免费、永久在线） |
 | QR码 | 预计算数据内联 JS，Canvas 绘制 |
 | 视频 | B站嵌入播放器 + CORS 代理获取视频信息 |
 
