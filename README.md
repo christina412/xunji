@@ -1,3 +1,20 @@
+
+
+---
+
+## 📜 商标与品牌声明
+
+**HerCycle** 名称及 Logo 为陈令璇（christina412）所有的商标，未经书面授权，任何个人或组织不得将 "HerCycle" 名称、Logo 或其变体用于商业目的，包括但不限于：
+
+- 以 HerCycle 名义发布产品或服务
+- 在应用商店、网站或社交媒体上使用 HerCycle 品牌标识
+- 将 HerCycle 商标用于广告、推广或商业合作
+
+本项目的源代码基于 MIT 协议开源，代码使用权限以 MIT 协议为准。但 **HerCycle 品牌名称和视觉标识不在 MIT 协议授权范围内**。
+
+如需品牌授权合作，请联系：christina412@github
+
+
 <p align="center"><img src="assets/icon-color.svg" alt="HerCycle Logo" width="120"/></p>
 
 # HerCycle
@@ -178,6 +195,23 @@ python3 -m http.server 8080
 [MIT](LICENSE)
 
 ---
+
+
+
+---
+
+## 📜 商标与品牌声明
+
+**HerCycle** 名称及 Logo 为陈令璇（christina412）所有的商标，未经书面授权，任何个人或组织不得将 "HerCycle" 名称、Logo 或其变体用于商业目的，包括但不限于：
+
+- 以 HerCycle 名义发布产品或服务
+- 在应用商店、网站或社交媒体上使用 HerCycle 品牌标识
+- 将 HerCycle 商标用于广告、推广或商业合作
+
+本项目的源代码基于 MIT 协议开源，代码使用权限以 MIT 协议为准。但 **HerCycle 品牌名称和视觉标识不在 MIT 协议授权范围内**。
+
+如需品牌授权合作，请联系：christina412@github
+
 
 <p align="center">
   <sub>Built with ❤️ by <a href="https://github.com/christina412">christina412</a></sub>
