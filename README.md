@@ -4,26 +4,26 @@
 
 ## 📜 商标与品牌声明
 
-**HerCycle** 名称及 Logo 为陈令璇（christina412）所有的商标，未经书面授权，任何个人或组织不得将 "HerCycle" 名称、Logo 或其变体用于商业目的，包括但不限于：
+**循己 / XUNJI** 名称及 Logo 为陈令璇（christina412）所有的商标，未经书面授权，任何个人或组织不得将 "循己" "XUNJI" 名称、Logo 或其变体用于商业目的，包括但不限于：
 
-- 以 HerCycle 名义发布产品或服务
-- 在应用商店、网站或社交媒体上使用 HerCycle 品牌标识
-- 将 HerCycle 商标用于广告、推广或商业合作
+- 以循己/XUNJI名义发布产品或服务
+- 在应用商店、网站或社交媒体上使用循己/XUNJI品牌标识
+- 将循己/XUNJI商标用于广告、推广或商业合作
 
-本项目的源代码基于 MIT 协议开源，代码使用权限以 MIT 协议为准。但 **HerCycle 品牌名称和视觉标识不在 MIT 协议授权范围内**。
+本项目的源代码基于 MIT 协议开源，代码使用权限以 MIT 协议为准。但 **循己/XUNJI 品牌名称和视觉标识不在 MIT 协议授权范围内**。
 
 如需品牌授权合作，请联系：christina412@github
 
 
-<p align="center"><img src="assets/icon-color.svg" alt="HerCycle Logo" width="120"/></p>
+<p align="center"><img src="assets/logo-zh.svg" alt="循己 Logo" width="120"/></p>
 
-# HerCycle
+# 循己 XUNJI
 
 **基于女性生理周期的个性化饮食·健身·日程管理助手**
 
-[![Deploy](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen)](https://christina412.github.io/hercycle/) [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE) [![Version](https://img.shields.io/badge/Version-6.4-orange)]()
+[![Deploy](https://img.shields.io/badge/Cloudflare%20Pages-Live-brightgreen)](https://xunji.413592499clx.workers.dev/) [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE) [![Version](https://img.shields.io/badge/Version-6.4-orange)]()
 
-👉 **[立即体验](https://christina412.github.io/hercycle/)**
+👉 **[立即体验](https://xunji.413592499clx.workers.dev/)**
 
 ---
 
@@ -78,7 +78,7 @@
 | 架构 | 单 HTML 文件，全 CSS/JS 内联，零构建 |
 | 样式 | CSS 变量体系 + 设计系统，支持 Light/Dark 模式 |
 | 数据 | 纯 localStorage，无后端，无账号 |
-| 部署 | GitHub Pages（免费、永久在线） |
+| 部署 | Cloudflare Pages（免费、永久在线） |
 | QR码 | 预计算数据内联 JS，Canvas 绘制 |
 | 视频 | B站嵌入播放器 + CORS 代理获取视频信息 |
 
@@ -96,7 +96,7 @@
 ## 📁 项目结构
 
 ```
-hercycle/
+xunji/
 ├── index.html        # 完整应用（HTML + CSS + JS 单文件）
 ├── LICENSE           # MIT License
 └── README.md         # 本文档
@@ -129,6 +129,12 @@ python3 -m http.server 8080
 ---
 
 ## 📝 版本历史
+
+### V6.4.4 (2026-06-01)
+- 🔄 品牌更名：HerCycle → **循己 / XUNJI**（因第9类/44类商标被上海泽舍先申请）
+- 🔄 部署迁移：GitHub Pages → Cloudflare Pages（仓库已转Private）
+- 🔄 Logo 更新：新循己品牌图标 + SVG品牌色统一 #C4736E
+- 🔄 QR码链接更新至新域名 xunji.413592499clx.workers.dev
 
 ### V6.4 (2026-06-01)
 - 🎨 UI/UX 视觉体系全面重写：品牌色 `#C4736E` 统一、字号放大、间距舒展
@@ -202,13 +208,13 @@ python3 -m http.server 8080
 
 ## 📜 商标与品牌声明
 
-**HerCycle** 名称及 Logo 为陈令璇（christina412）所有的商标，未经书面授权，任何个人或组织不得将 "HerCycle" 名称、Logo 或其变体用于商业目的，包括但不限于：
+**循己 / XUNJI** 名称及 Logo 为陈令璇（christina412）所有的商标，未经书面授权，任何个人或组织不得将 "循己" "XUNJI" 名称、Logo 或其变体用于商业目的，包括但不限于：
 
-- 以 HerCycle 名义发布产品或服务
-- 在应用商店、网站或社交媒体上使用 HerCycle 品牌标识
-- 将 HerCycle 商标用于广告、推广或商业合作
+- 以循己/XUNJI名义发布产品或服务
+- 在应用商店、网站或社交媒体上使用循己/XUNJI品牌标识
+- 将循己/XUNJI商标用于广告、推广或商业合作
 
-本项目的源代码基于 MIT 协议开源，代码使用权限以 MIT 协议为准。但 **HerCycle 品牌名称和视觉标识不在 MIT 协议授权范围内**。
+本项目的源代码基于 MIT 协议开源，代码使用权限以 MIT 协议为准。但 **循己/XUNJI 品牌名称和视觉标识不在 MIT 协议授权范围内**。
 
 如需品牌授权合作，请联系：christina412@github
 
