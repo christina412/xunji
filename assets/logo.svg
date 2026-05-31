@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C4736E"/>
+      <stop offset="100%" stop-color="#D4A574"/>
+    </linearGradient>
+  </defs>
+  <rect x="116" y="84" width="280" height="280" rx="60" fill="#fff" stroke="#EDE8E3" stroke-width="1"/>
+  <circle cx="256" cy="220" r="104" fill="none" stroke="url(#grad)" stroke-width="3" opacity="0.3"/>
+  <circle cx="256" cy="116" r="10" fill="#C4736E"/>
+  <circle cx="360" cy="220" r="10" fill="#D4A574"/>
+  <circle cx="256" cy="324" r="10" fill="#C4736E"/>
+  <circle cx="152" cy="220" r="10" fill="#D4A574"/>
+  <rect x="200" y="158" width="24" height="124" rx="12" fill="#2D2A26"/>
+  <rect x="288" y="158" width="24" height="124" rx="12" fill="#2D2A26"/>
+  <path d="M212,220 C238,195 274,195 300,220" stroke="url(#grad)" stroke-width="18" stroke-linecap="round" fill="none"/>
+  <text x="256" y="478" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif" font-size="52" font-weight="700" fill="#2D2A26" letter-spacing="6">HerCycle</text>
+</svg>
