@@ -3,286 +3,1745 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HerCycle · 女性周期健身管理</title>
+<title>HerCycle · 基于女性生理周期的个性化饮食·健身·日程管理助手</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#FAF7F5;--card:#fff;--text:#2D2A26;--sub:#8C8578;
-  --accent:#C4736E;--accent2:#5A8C5E;--accent3:#D4A574;
-  --phase-menstrual:#C4736E;--phase-follicular:#5A8C5E;
-  --phase-ovulation:#D4A574;--phase-luteal:#8B7BA8;
-  --radius:16px;--shadow:0 2px 16px rgba(45,42,38,0.06);
-}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
-.header{background:var(--card);padding:20px 24px;border-bottom:1px solid rgba(45,42,38,0.06);position:sticky;top:0;z-index:100}
-.header h1{font-size:22px;font-weight:700;letter-spacing:-0.5px}
-.header p{font-size:13px;color:var(--sub);margin-top:2px}
-.container{max-width:480px;margin:0 auto;padding:16px}
-.card{background:var(--card);border-radius:var(--radius);padding:20px;margin-bottom:14px;box-shadow:var(--shadow)}
-.card-title{font-size:16px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+:root{--bg:#FAF7F5;--card:#fff;--text:#2D2A26;--sub:#8C8578;--accent:#C4736E;--accent2:#5A8C5E;--accent3:#D4A574;--phase-menstrual:#C4736E;--phase-follicular:#5A8C5E;--phase-ovulation:#D4A574;--phase-luteal:#8B7BA8;--radius:16px;--shadow:0 1px 6px rgba(0,0,0,0.04);--divider:#E8E4E0;--error:#E04040;--grad:linear-gradient(135deg,#C4736E,#D4A574)}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+.header{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--card);padding:12px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--divider)}
+.header-logo{width:44px;height:44px;flex-shrink:0}
+.header-text h1{font-size:20px;font-weight:800;letter-spacing:-0.5px;color:var(--text);line-height:1.1}
+.header-text p{font-size:12px;color:var(--sub);margin-top:2px;line-height:1.3}
+.header-spacer{height:0;width:100%}
+.tabs{position:fixed;top:80px;left:0;right:0;z-index:100;background:var(--card);display:flex;gap:8px;overflow-x:auto;padding:8px 20px;border-bottom:1px solid var(--divider);justify-content:center}
+.tab{padding:8px 18px;border-radius:999px;font-size:14px;font-weight:600;border:none;background:#EDE8E3;color:var(--sub);cursor:pointer;white-space:nowrap;transition:all .2s}
+.tab.active{background:var(--accent);color:#fff}
+.container{max-width:480px;margin:0 auto;padding:0 20px}
+.card{background:var(--card);border-radius:var(--radius);padding:20px;margin-bottom:12px;box-shadow:var(--shadow)}
+#tab-diet,#tab-workout,#tab-schedule{scroll-margin-top:110px}
+.card-title{font-size:16px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .card-title .icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff}
-.phase-banner{border-radius:var(--radius);padding:20px;color:#fff;position:relative;overflow:hidden;margin-bottom:14px}
-.phase-banner::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.1)}
-.phase-day{font-size:36px;font-weight:800;line-height:1}
-.phase-label{font-size:18px;font-weight:700;margin-top:4px}
-.phase-desc{font-size:13px;opacity:0.9;margin-top:6px;line-height:1.5}
-.phase-bar{display:flex;margin-top:14px;gap:3px;height:6px;border-radius:3px;overflow:hidden}
+.phase-banner{border-radius:var(--radius);padding:20px 24px;color:#fff;position:relative;overflow:hidden;margin-bottom:12px}
+.phase-banner::before{content:'';position:absolute;top:-30px;right:-30px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.1)}
+.phase-day{font-size:32px;font-weight:800;line-height:1}
+.phase-label{font-size:17px;font-weight:600;margin-top:4px}
+.phase-desc{font-size:13px;opacity:0.9;margin-top:4px;line-height:1.5}
+.phase-bar{display:flex;margin-top:12px;gap:3px;height:6px;border-radius:3px;overflow:hidden}
 .phase-bar span{flex:1;border-radius:3px;opacity:0.3}
 .phase-bar span.active{opacity:1}
 .form-group{margin-bottom:14px}
-.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--sub)}
-.form-group input,.form-group select{width:100%;padding:10px 14px;border:1.5px solid #EDE8E3;border-radius:10px;font-size:15px;background:var(--bg);color:var(--text);outline:none;transition:border-color .2s}
-.form-group input:focus,.form-group select:focus{border-color:var(--accent)}
-.form-row{display:flex;gap:10px}
+.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:5px;color:var(--sub)}
+.form-group input,.form-group select{width:100%;padding:12px 14px;border:1.5px solid #E8E4E0;border-radius:12px;font-size:15px;background:#FAF7F5;color:var(--text);outline:none;transition:border-color .2s}
+.form-group input::placeholder{color:#C8C2BA}
+.form-group select{color:var(--sub)}
+.form-group select option{color:var(--text)}
+.form-group input:focus,.form-group select:focus{border-color:#D4A574;background:#fff}
+.form-group.error input,.form-group.error select{border-color:var(--error)}
+.form-group .error-msg{font-size:12px;color:var(--error);margin-top:3px;display:none}
+.form-group.error .error-msg{display:block}
+.form-hint{font-size:12px;color:#B5AFA8;margin-top:3px;line-height:1.5}
+.form-row{display:flex;gap:8px}
 .form-row .form-group{flex:1}
-.btn{width:100%;padding:13px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s}
-.btn-primary{background:var(--accent);color:#fff}
+.btn{width:100%;padding:14px;border:none;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 4px 14px rgba(196,115,110,0.25)}
 .btn-primary:active{transform:scale(0.98)}
-.tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px}
-.tab{padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:none;background:#EDE8E3;color:var(--sub);cursor:pointer;white-space:nowrap;transition:all .2s}
-.tab.active{background:var(--accent);color:#fff}
-.meal{padding:12px 0;border-bottom:1px solid rgba(45,42,38,0.06)}
+.btn-sm{padding:8px 16px;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.meal{padding:8px 0;border-bottom:1px solid var(--divider)}
 .meal:last-child{border-bottom:none}
-.meal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.meal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
 .meal-time{font-size:13px;font-weight:700;color:var(--accent)}
-.meal-kcal{font-size:12px;color:var(--sub);background:var(--bg);padding:2px 8px;border-radius:10px}
-.meal-items{font-size:14px;color:var(--text)}
-.meal-tip{font-size:12px;color:var(--sub);margin-top:4px;font-style:italic}
-.workout-item{padding:12px 0;border-bottom:1px solid rgba(45,42,38,0.06)}
+.meal-kcal{font-size:11px;color:var(--sub);background:var(--bg);padding:1px 7px;border-radius:999px}
+.meal-items{font-size:15px;color:var(--text)}
+.meal-tip{font-size:12px;color:var(--sub);margin-top:2px;font-style:italic}
+.workout-item{padding:8px 0;border-bottom:1px solid var(--divider);display:flex;align-items:flex-start;gap:8px}
 .workout-item:last-child{border-bottom:none}
-.workout-name{font-size:15px;font-weight:600}
-.workout-meta{font-size:12px;color:var(--sub);margin-top:2px}
-.workout-sets{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.set-tag{font-size:12px;padding:4px 10px;border-radius:8px;background:var(--bg);color:var(--text)}
-.schedule-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(45,42,38,0.06);align-items:flex-start}
-.schedule-item:last-child{border-bottom:none}
-.schedule-time{font-size:13px;font-weight:700;color:var(--accent);min-width:50px;padding-top:1px}
-.schedule-content{flex:1}
-.schedule-title{font-size:14px;font-weight:600}
-.schedule-desc{font-size:12px;color:var(--sub);margin-top:2px}
-.nutrient{margin-bottom:10px}
-.nutrient-header{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+.workout-name{font-size:14px;font-weight:600}
+.workout-meta{font-size:12px;color:var(--sub);margin-top:1px}
+.workout-sets{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.set-tag{font-size:10px;padding:2px 7px;border-radius:6px;background:var(--bg);color:var(--text)}
+.workout-item-right{flex:1;min-width:0}
+.workout-item-actions{margin-top:4px;display:flex;gap:4px}
+.demo-btn{padding:5px 12px;border:none;border-radius:6px;background:var(--bg);color:var(--accent);font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--accent);transition:all .2s}
+.demo-btn:active{transform:scale(0.97);background:var(--accent);color:#fff}
+.nutrient{margin-bottom:6px}
+.nutrient-header{display:flex;justify-content:space-between;font-size:12px;margin-bottom:2px}
 .nutrient-bar{height:6px;border-radius:3px;background:#EDE8E3;overflow:hidden}
 .nutrient-bar span{display:block;height:100%;border-radius:3px;transition:width .8s ease}
-.bmi-display{text-align:center;padding:10px 0}
-.bmi-value{font-size:40px;font-weight:800;color:var(--accent)}
-.bmi-label{font-size:14px;color:var(--sub);margin-top:2px}
-.bmi-category{display:inline-block;margin-top:6px;padding:4px 14px;border-radius:20px;font-size:13px;font-weight:600;background:var(--accent2);color:#fff}
+.bmi-display{text-align:center;padding:6px 0}
+.bmi-value{font-size:36px;font-weight:800;color:var(--accent)}
+.bmi-label{font-size:12px;color:var(--sub);margin-top:1px}
+.bmi-category{display:inline-block;margin-top:3px;padding:3px 12px;border-radius:999px;font-size:12px;font-weight:600;background:var(--accent2);color:#fff}
 .hidden{display:none!important}
-.tip-box{background:var(--bg);border-radius:12px;padding:14px;margin-top:10px;font-size:13px;color:var(--sub);line-height:1.7}
+.tip-box{background:var(--bg);border-radius:12px;padding:12px;margin-top:6px;font-size:13px;color:var(--sub);line-height:1.5}
 .tip-box strong{color:var(--text)}
 ::-webkit-scrollbar{width:0;height:0}
-@media(max-width:480px){.container{padding:12px}.phase-day{font-size:28px}.bmi-value{font-size:32px}}
+.timeline{position:relative;padding-left:30px}
+.timeline::before{content:'';position:absolute;left:11px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--accent2),var(--accent3),var(--phase-luteal));border-radius:1px;opacity:0.3}
+.tl-item{position:relative;padding:0 0 14px 12px}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{position:absolute;left:-24px;top:3px;width:9px;height:9px;border-radius:50%;border:2px solid var(--card);z-index:1}
+.tl-time{font-size:11px;font-weight:800;color:var(--accent);letter-spacing:0.5px;margin-bottom:1px}
+.tl-title{font-size:13px;font-weight:700;line-height:1.3}
+.tl-desc{font-size:11px;color:var(--sub);margin-top:1px}
+.tl-meal-card{background:var(--bg);border-radius:8px;padding:7px 9px;margin-top:3px}
+.tl-meal-foods{font-size:13px;font-weight:600;color:var(--text);line-height:1.4}
+.tl-meal-kcal{font-size:9px;color:var(--sub);margin-top:1px}
+.tl-meal-tip{font-size:9px;color:var(--accent2);margin-top:1px;font-style:italic}
+.export-bar{display:flex;gap:6px;margin-bottom:8px}
+.export-btn{flex:1;padding:10px;border:1.5px solid #EDE8E3;border-radius:10px;background:var(--card);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;transition:all .2s;color:var(--text)}
+.export-btn:active{transform:scale(0.97)}
+.export-btn:hover{border-color:var(--accent)}
+.export-btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:rgba(45,42,38,0.9);color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+.time-config{background:var(--bg);border-radius:12px;padding:12px;margin-bottom:8px}
+.time-config-title{font-size:13px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.time-row{display:flex;align-items:center;gap:5px;margin-bottom:5px}
+.time-row:last-of-type{margin-bottom:0}
+.time-label{font-size:11px;font-weight:600;color:var(--sub);min-width:50px}
+.time-row input[type=time]{padding:3px 6px;border:1.5px solid #EDE8E3;border-radius:6px;font-size:13px;background:var(--card);color:var(--text);outline:none;width:90px}
+.time-row input[type=time]:focus{border-color:var(--accent)}
+.time-hint{font-size:9px;color:#B5AFA8;margin-left:auto}
+.time-config .btn-sm{margin-top:6px;background:var(--accent);color:#fff;width:100%}
+.blogger-section{margin-bottom:8px}
+.blogger-label{font-size:13px;font-weight:600;color:var(--sub);margin-bottom:5px}
+.blogger-chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+.blogger-chip{padding:4px 9px;border-radius:999px;font-size:12px;font-weight:600;background:#EDE8E3;color:var(--text);cursor:pointer;border:1.5px solid transparent;transition:all .2s}
+.blogger-chip:hover{border-color:var(--accent)}
+.blogger-chip.selected{background:var(--accent);color:#fff}
+.blogger-input-row{display:flex;gap:5px}
+.blogger-input{flex:1;padding:5px 9px;border:1.5px solid #EDE8E3;border-radius:8px;font-size:12px;background:var(--bg);color:var(--text);outline:none}
+.blogger-input:focus{border-color:var(--accent)}
+.blogger-search-btn{padding:5px 10px;border:none;border-radius:8px;background:var(--accent2);color:#fff;font-size:12px;font-weight:600;cursor:pointer}
+.blogger-search-btn:active{transform:scale(0.97)}
+.blogger-cards{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:6px}
+.blogger-card{background:var(--bg);border-radius:8px;padding:8px;text-align:center}
+.blogger-card-avatar{width:36px;height:36px;border-radius:50%;margin:0 auto 3px;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--accent);color:#fff}
+.blogger-card-name{font-size:12px;font-weight:700;color:var(--text)}
+.blogger-card-desc{font-size:10px;color:var(--sub);margin:2px 0 5px}
+.blogger-card-btn{padding:4px 8px;border:none;border-radius:6px;background:var(--accent2);color:#fff;font-size:11px;font-weight:600;cursor:pointer;width:100%}
+.blogger-card-btn:active{transform:scale(0.97)}
+.video-section{margin-top:6px}
+.video-iframe-wrap{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px}
+.video-iframe-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
+.bv-input-row{display:flex;gap:5px;margin-bottom:5px}
+.bv-input{flex:1;padding:5px 9px;border:1.5px solid #EDE8E3;border-radius:8px;font-size:12px;background:var(--bg);color:var(--text);outline:none}
+.bv-input:focus{border-color:var(--accent)}
+.bv-parse-btn{padding:5px 10px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-size:12px;font-weight:600;cursor:pointer}
+.workout-progress{margin-bottom:8px}
+.workout-progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.workout-progress-title{font-size:13px;font-weight:600;color:var(--text)}
+.workout-progress-count{font-size:11px;font-weight:700;color:var(--accent)}
+.workout-progress-bar{height:6px;border-radius:3px;background:#EDE8E3;overflow:hidden}
+.workout-progress-fill{height:100%;background:var(--accent2);border-radius:3px;transition:width .4s ease}
+.encouragement{text-align:center;padding:5px;font-size:13px;font-weight:600;color:var(--accent2);opacity:0;transition:opacity .5s;pointer-events:none;min-height:24px}
+.encouragement.show{opacity:1}
+.exercise-checkbox{width:20px;height:20px;border-radius:50%;border:2px solid #C8C2BA;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-top:1px;transition:all .2s}
+.exercise-checkbox.checked{background:var(--accent2);border-color:var(--accent2)}
+.exercise-checkbox.checked::after{content:'✓';color:#fff;font-size:12px;font-weight:700}
+.exercise-checkbox:active{transform:scale(0.9)}
+.checkin-trigger{width:100%;padding:14px;border:none;border-radius:14px;background:var(--grad);color:#fff;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;transition:all .2s;box-shadow:0 4px 14px rgba(196,115,110,0.25)}
+.checkin-trigger:active{transform:scale(0.98)}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;padding:14px;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal-box{background:var(--card);border-radius:var(--radius);max-width:380px;width:100%;max-height:90vh;overflow-y:auto;padding:20px;position:relative}
+.modal-close{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;border:none;background:var(--bg);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sub)}
+.modal-close:active{transform:scale(0.9)}
+.modal-title{font-size:15px;font-weight:700;margin-bottom:8px;padding-right:32px}
+.demo-modal-steps{margin:8px 0}
+.demo-step{display:flex;gap:6px;margin-bottom:5px;align-items:flex-start}
+.demo-step-num{width:18px;height:18px;border-radius:50%;background:var(--accent2);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.demo-step-text{font-size:12px;color:var(--text);line-height:1.4}
+.demo-bilibili-btn{display:flex;align-items:center;gap:4px;width:100%;padding:7px;border:none;border-radius:8px;background:#FF6699;color:#fff;font-size:13px;font-weight:600;cursor:pointer;justify-content:center;margin:8px 0 4px}
+.demo-bilibili-btn:active{transform:scale(0.98)}
+.demo-attribution{font-size:10px;color:var(--sub);text-align:center}
+.checkin-modal{max-width:360px;padding:0;overflow:hidden}
+.checkin-hero{padding:20px 18px 14px;text-align:center;color:#fff;position:relative}
+.checkin-hero h2{font-size:20px;font-weight:800;letter-spacing:0.5px}
+.checkin-hero-sub{font-size:13px;opacity:0.85;margin-top:3px;line-height:1.3}
+.checkin-motto{font-size:15px;font-weight:700;margin-top:8px;opacity:0.95;line-height:1.5}
+.checkin-body{padding:14px 18px 18px}
+.checkin-exercise{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid #F0EDEA}
+.checkin-exercise:last-child{border-bottom:none}
+.checkin-exercise-check{width:18px;height:18px;border-radius:50%;background:var(--accent2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
+.checkin-exercise-name{font-size:13px;color:var(--text);font-weight:500}
+.checkin-exercise-tag{font-size:10px;color:var(--accent2);background:rgba(90,140,94,0.1);padding:1px 5px;border-radius:999px;margin-left:auto;flex-shrink:0}
+.checkin-qr-section{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px;background:var(--bg);border-radius:8px}
+.checkin-qr-img-wrap{width:64px;height:64px;border-radius:6px;overflow:hidden;flex-shrink:0;background:#fff}
+.checkin-qr-img-wrap img{width:100%;height:100%;object-fit:contain}
+.checkin-qr-text{flex:1}
+.checkin-qr-text-title{font-size:12px;font-weight:700;color:var(--text)}
+.checkin-qr-text-desc{font-size:10px;color:var(--sub);margin-top:1px}
+.checkin-date-badge{display:inline-block;font-size:10px;color:var(--sub);background:var(--card);border:1px solid #EDE8E3;padding:1px 6px;border-radius:999px;margin-top:2px}
+.checkin-actions{display:flex;gap:6px;margin-top:12px}
+.checkin-save-btn,.checkin-share-btn{flex:1;padding:9px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer}
+.checkin-save-btn{background:var(--accent);color:#fff}
+.checkin-share-btn{background:#EDE8E3;color:var(--text)}
+.checkin-save-btn:active,.checkin-share-btn:active{transform:scale(0.97)}
+.video-info{background:var(--bg);border-radius:12px;padding:12px;margin-top:6px}
+.video-info-title{font-size:14px;font-weight:700;color:var(--text);line-height:1.3}
+.video-info-row{display:flex;align-items:center;gap:5px;margin-top:3px}
+.video-info-blogger{font-size:13px;color:var(--accent);font-weight:600}
+.video-info-blogger-input{flex:1;padding:2px 5px;border:1px solid #EDE8E3;border-radius:5px;font-size:12px;background:var(--card);color:var(--text);outline:none}
+.video-info-blogger-input:focus{border-color:var(--accent)}
+.fav-btn{width:24px;height:24px;border:none;border-radius:50%;background:none;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.fav-btn:active{transform:scale(0.9)}
+.fav-btn.active{color:#FFB800}
+.fav-btn:not(.active){color:#C8C2BA}
+.fav-section{margin-bottom:4px}
+.fav-section-label{font-size:11px;font-weight:600;color:var(--sub);margin-bottom:3px;display:flex;align-items:center;gap:2px}
+.fav-chips{display:flex;flex-wrap:wrap;gap:3px}
+.fav-chip{display:flex;align-items:center;gap:1px;padding:2px 6px;border-radius:999px;font-size:10px;font-weight:600;background:rgba(90,140,94,0.1);color:var(--accent2);cursor:pointer;border:1px solid rgba(90,140,94,0.2);transition:all .2s}
+.fav-chip:hover{border-color:var(--accent2)}
+.fav-chip.selected{background:var(--accent2);color:#fff}
+.fav-chip .fav-remove{font-size:8px;cursor:pointer;margin-left:1px;opacity:0.6}
+.fav-chip .fav-remove:hover{opacity:1}
+.fav-chip.selected .fav-remove{color:#fff}
+.history-section{margin-top:6px}
+.history-label{font-size:11px;font-weight:600;color:var(--sub);margin-bottom:3px;cursor:pointer;display:flex;align-items:center;gap:2px}
+.history-list{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.history-list.expanded{max-height:600px}
+.history-item{display:flex;align-items:center;gap:5px;padding:5px 0;border-bottom:1px solid #F0EDEA;cursor:pointer}
+.history-item:last-child{border-bottom:none}
+.history-item:hover{background:var(--bg);border-radius:3px}
+.history-item-info{flex:1;min-width:0}
+.history-item-blogger{font-size:11px;font-weight:700;color:var(--accent)}
+.history-item-title{font-size:11px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px}
+.history-item-date{font-size:9px;color:#C8C2BA;flex-shrink:0}
+.history-item-fav{font-size:12px;cursor:pointer;color:#C8C2BA;flex-shrink:0}
+.history-item-fav.active{color:#FFB800}
+.history-toggle{font-size:10px;color:var(--accent2);cursor:pointer;text-align:center;padding:3px 0}
+.shopping-item{padding:4px 0;border-bottom:1px solid #F0EDEA;display:flex;align-items:center;gap:5px}
+.shopping-item:last-child{border-bottom:none}
+.shopping-item input[type=checkbox]{width:18px;height:18px;cursor:pointer}
+.shopping-item.checked span{text-decoration:line-through;color:#C8C2BA}
+.shopping-copy-btn{width:100%;padding:10px;border:none;border-radius:10px;background:var(--accent2);color:#fff;font-size:12px;font-weight:600;cursor:pointer;margin-top:8px}
+.shopping-copy-btn:active{transform:scale(0.97)}
+.takeout-card{background:var(--bg);border-radius:8px;padding:12px;margin-bottom:5px}
+.takeout-card-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.takeout-card-desc{font-size:11px;color:var(--sub);margin-bottom:3px}
+.takeout-card-search{font-size:12px;color:var(--accent);padding:3px 0}
+.goal-chips{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:3px}
+.goal-chip{padding:10px 8px;border-radius:12px;border:1.5px solid #EDE8E3;background:var(--bg);cursor:pointer;text-align:center;transition:all .2s}
+.goal-chip:active{transform:scale(0.97)}
+.goal-chip.selected{border-color:var(--accent);background:rgba(196,115,110,0.06)}
+.goal-chip-emoji{font-size:22px;display:block;margin-bottom:1px}
+.goal-chip-label{font-size:13px;font-weight:700;color:var(--text);display:block}
+.goal-chip-desc{font-size:10px;color:var(--sub);display:block;margin-top:1px}
+@media(prefers-color-scheme:dark){:root{--bg:#1A1816;--card:#2D2A26;--text:#FAF7F5;--sub:#A09890;--accent:#C4736E;--accent2:#5A8C5E;--accent3:#D4A574;--phase-menstrual:#C4736E;--phase-follicular:#5A8C5E;--phase-ovulation:#D4A574;--phase-luteal:#8B7BA8;--divider:rgba(255,255,255,0.08);--shadow:0 2px 12px rgba(0,0,0,0.3)}.header{border-bottom-color:var(--divider)}.tabs{border-bottom-color:var(--divider)}.form-group input,.form-group select{background:var(--bg);color:var(--text);border-color:rgba(255,255,255,0.12)}.form-group select option{color:var(--text)}.form-group input:focus,.form-group select:focus{border-color:#D4A574;background:var(--bg)}.tab{background:rgba(255,255,255,0.1)}.exercise-checkbox{border-color:rgba(255,255,255,0.3)}.demo-bilibili-btn{background:#CC3377}}
+@media(max-width:480px){.container{padding:0 16px}.phase-day{font-size:28px}.bmi-value{font-size:30px}}
+
 </style>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='64' height='64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23C4736E'/%3E%3Cstop offset='100%25' stop-color='%23D4A574'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='14.5' y='10.5' width='35' height='35' rx='7.5' fill='%23fff' stroke='%23EDE8E3' stroke-width='0.5'/%3E%3Ccircle cx='32' cy='14.5' r='1.5' fill='%23C4736E'/%3E%3Ccircle cx='45' cy='27.5' r='1.5' fill='%23D4A574'/%3E%3Ccircle cx='32' cy='40.5' r='1.5' fill='%23C4736E'/%3E%3Ccircle cx='19' cy='27.5' r='1.5' fill='%23D4A574'/%3E%3Crect x='25' y='19.75' width='3' height='15.5' rx='1.5' fill='%232D2A26'/%3E%3Crect x='36' y='19.75' width='3' height='15.5' rx='1.5' fill='%232D2A26'/%3E%3Cpath d='M26.5,27.5 C29.75,24.4 34.25,24.4 37.5,27.5' stroke='url(%23g)' stroke-width='2.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' width='512' height='512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23C4736E'/%3E%3Cstop offset='100%25' stop-color='%23D4A574'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='116' y='84' width='280' height='280' rx='60' fill='%23fff' stroke='%23EDE8E3' stroke-width='1'/%3E%3Ccircle cx='256' cy='116' r='10' fill='%23C4736E'/%3E%3Ccircle cx='360' cy='220' r='10' fill='%23D4A574'/%3E%3Ccircle cx='256' cy='324' r='10' fill='%23C4736E'/%3E%3Ccircle cx='152' cy='220' r='10' fill='%23D4A574'/%3E%3Crect x='200' y='158' width='24' height='124' rx='12' fill='%232D2A26'/%3E%3Crect x='288' y='158' width='24' height='124' rx='12' fill='%232D2A26'/%3E%3Cpath d='M212,220 C238,195 274,195 300,220' stroke='url(%23g)' stroke-width='18' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#C4736E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 </head>
 <body>
-<div class="header">
-  <h1>🌸 HerCycle</h1>
-  <p>基于月经周期的个性化饮食·健身·日程管理</p>
-</div>
+<div class="header"><svg class="header-logo" viewBox="80 50 352 330" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="hlgr" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#C4736E"/><stop offset="100%" stop-color="#D4A574"/></linearGradient></defs><rect x="116" y="84" width="280" height="280" rx="60" fill="#fff" stroke="#EDE8E3" stroke-width="1"/><circle cx="256" cy="220" r="104" fill="none" stroke="url(#hlgr)" stroke-width="3" opacity="0.3"/><circle cx="256" cy="116" r="10" fill="#C4736E"/><circle cx="360" cy="220" r="10" fill="#D4A574"/><circle cx="256" cy="324" r="10" fill="#C4736E"/><circle cx="152" cy="220" r="10" fill="#D4A574"/><rect x="200" y="158" width="24" height="124" rx="12" fill="#2D2A26"/><rect x="288" y="158" width="24" height="124" rx="12" fill="#2D2A26"/><path d="M212,220 C238,195 274,195 300,220" stroke="url(#hlgr)" stroke-width="18" stroke-linecap="round" fill="none"/></svg><div class="header-text"><h1>HerCycle</h1><p>基于女性生理周期的个性化饮食·健身·日程管理助手</p></div></div><div class="header-spacer" id="header-spacer"></div>
 <div class="container" id="app">
   <div id="page-input">
     <div class="card">
-      <div class="card-title"><span class="icon" style="background:var(--accent)">📋</span> 个人信息</div>
+      <div style="margin-bottom:18px"><div style="font-size:22px;font-weight:800;letter-spacing:-0.5px;color:var(--text)">了解你的节奏</div><div style="font-size:13px;color:var(--sub);margin-top:4px;line-height:1.5">填写基本信息，HerCycle 将为你定制周期专属方案</div></div>
       <div class="form-row">
-        <div class="form-group"><label>身高 (cm)</label><input type="number" id="height" placeholder="160" min="140" max="200"></div>
-        <div class="form-group"><label>体重 (kg)</label><input type="number" id="weight" placeholder="55" min="35" max="150"></div>
+        <div class="form-group" id="fg-height"><label>身高 (cm)</label><input type="number" id="height" placeholder="例如 160" min="140" max="200"><div class="error-msg">请输入身高</div></div>
+        <div class="form-group" id="fg-weight"><label>体重 (kg)</label><input type="number" id="weight" placeholder="例如 55" min="35" max="150"><div class="error-msg">请输入体重</div></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>年龄</label><input type="number" id="age" placeholder="28" min="12" max="60"></div>
-        <div class="form-group"><label>周期天数</label>
-          <select id="cycle-length">
-            <option value="25">25天</option><option value="26">26天</option><option value="27">27天</option>
-            <option value="28" selected>28天</option><option value="29">29天</option><option value="30">30天</option>
-            <option value="31">31天</option><option value="32">32天</option><option value="35">35天</option>
-          </select>
+        <div class="form-group" id="fg-age"><label>年龄</label><input type="number" id="age" placeholder="例如 28" min="12" max="60"><div class="error-msg">请输入年龄</div></div>
+        <div class="form-group" id="fg-cycle">
+          <label>月经周期天数 <a onclick="toggleHelp('cycle-help')" style="font-size:11px;cursor:pointer">❓</a></label>
+          <select id="cycle-length"><option value="" disabled selected>请选择</option><option value="21">21天</option><option value="22">22天</option><option value="23">23天</option><option value="24">24天</option><option value="25">25天</option><option value="26">26天</option><option value="27">27天</option><option value="28">28天（标准）</option><option value="29">29天</option><option value="30">30天</option><option value="31">31天</option><option value="32">32天</option><option value="35">35天</option><option value="38">38天</option><option value="40">40天</option><option value="45">45天</option><option value="50">50天</option><option value="60">60天</option><option value="70">70天</option><option value="90">90天</option><option value="0">周期不规律/疑似PCOS</option></select>
+          <div class="error-msg">请选择周期天数</div>
+          <div class="form-hint" id="cycle-help" style="display:none">💡 从上次月经第一天到下次月经第一天的间隔天数。周期不规律选"周期不规律/疑似PCOS"；多囊卵巢等长周期患者选最常出现的范围。<br>⚠️ 周期不规律建议同步就医评估激素水平。</div>
         </div>
       </div>
-      <div class="form-group"><label>末次月经第一天</label><input type="date" id="last-period"></div>
-      <div class="form-group"><label>经期天数</label>
-        <select id="period-length">
-          <option value="3">3天</option><option value="4">4天</option><option value="5" selected>5天</option>
-          <option value="6">6天</option><option value="7">7天</option>
-        </select>
+      <div class="form-group" id="fg-lastperiod">
+        <label>末次月经第一天 <a onclick="toggleHelp('period-help')" style="font-size:11px;cursor:pointer">❓</a></label>
+        <input type="date" id="last-period"><div class="error-msg">请选择日期</div>
+        <div class="form-hint" id="period-help" style="display:none">💡 最近一次月经来潮（开始出血）的日期，不是结束日期。<br>不记得了？大致选一个最近的日期即可，系统会根据周期天数推算你当前所处的阶段，不影响方案参考价值。</div>
       </div>
-      <div class="form-group"><label>健身目标</label>
-        <select id="goal">
-          <option value="lose">减脂塑形</option><option value="maintain">维持体态</option><option value="gain">增肌增重</option>
-        </select>
-      </div>
+      <div class="form-group"><label>经期天数</label><select id="period-length"><option value="3">3天</option><option value="4">4天</option><option value="5" selected>5天</option><option value="6">6天</option><option value="7">7天</option><option value="8">8天及以上</option></select></div>
+      <div class="form-group" id="fg-goal"><label>健身目标 <a onclick="document.getElementById('goal-help-modal').classList.add('show')" style="font-size:11px;cursor:pointer">❓</a></label><input type="hidden" id="goal" value=""><div class="goal-chips"><div class="goal-chip" data-goal="lose" onclick="selectGoal(this)"><span class="goal-chip-emoji">🔥</span><span class="goal-chip-label">减脂</span><span class="goal-chip-desc">高效燃脂</span></div><div class="goal-chip" data-goal="shape" onclick="selectGoal(this)"><span class="goal-chip-emoji">✨</span><span class="goal-chip-label">塑形</span><span class="goal-chip-desc">线条雕刻</span></div><div class="goal-chip" data-goal="gain" onclick="selectGoal(this)"><span class="goal-chip-emoji">💪</span><span class="goal-chip-label">增肌</span><span class="goal-chip-desc">力量训练</span></div><div class="goal-chip" data-goal="maintain" onclick="selectGoal(this)"><span class="goal-chip-emoji">🌿</span><span class="goal-chip-label">维持</span><span class="goal-chip-desc">均衡健康</span></div></div><div class="error-msg">请选择健身目标</div></div>
       <button class="btn btn-primary" onclick="generatePlan()">生成我的方案</button>
     </div>
   </div>
   <div id="page-result" class="hidden">
-    <div class="phase-banner" id="phase-banner">
-      <div class="phase-day" id="phase-day-num"></div>
-      <div class="phase-label" id="phase-label"></div>
-      <div class="phase-desc" id="phase-desc"></div>
-      <div class="phase-bar" id="phase-bar"></div>
-    </div>
-    <div class="card">
-      <div class="card-title"><span class="icon" style="background:var(--accent3)">📊</span> 身体概况</div>
-      <div class="bmi-display">
-        <div class="bmi-value" id="bmi-value"></div>
-        <div class="bmi-label">BMI 指数</div>
-        <div class="bmi-category" id="bmi-category"></div>
-      </div>
-      <div style="margin-top:12px">
-        <div class="nutrient"><div class="nutrient-header"><span>基础代谢</span><span id="bmr-val"></span></div><div class="nutrient-bar"><span id="bmr-bar" style="background:var(--accent2)"></span></div></div>
-        <div class="nutrient"><div class="nutrient-header"><span>每日建议摄入</span><span id="tdee-val"></span></div><div class="nutrient-bar"><span id="tdee-bar" style="background:var(--accent3)"></span></div></div>
-        <div class="nutrient"><div class="nutrient-header"><span>蛋白质目标</span><span id="protein-val"></span></div><div class="nutrient-bar"><span id="protein-bar" style="background:var(--accent)"></span></div></div>
+    <div class="phase-banner" id="phase-banner"><div class="phase-day" id="phase-day-num"></div><div class="phase-label" id="phase-label"></div><div class="phase-desc" id="phase-desc"></div><div class="phase-bar" id="phase-bar"></div></div>
+    <div class="card"><div class="card-title"><span class="icon" style="background:var(--accent3)">📊</span> 身体概况</div><div class="bmi-display"><div class="bmi-value" id="bmi-value"></div><div class="bmi-label">BMI 指数</div><div class="bmi-category" id="bmi-category"></div></div><div style="margin-top:12px"><div class="nutrient"><div class="nutrient-header"><span>基础代谢</span><span id="bmr-val"></span></div><div class="nutrient-bar"><span id="bmr-bar" style="background:var(--accent2)"></span></div></div><div class="nutrient"><div class="nutrient-header"><span>每日建议摄入</span><span id="tdee-val"></span></div><div class="nutrient-bar"><span id="tdee-bar" style="background:var(--accent3)"></span></div></div><div class="nutrient"><div class="nutrient-header"><span>蛋白质目标</span><span id="protein-val"></span></div><div class="nutrient-bar"><span id="protein-bar" style="background:var(--accent)"></span></div></div></div></div>
+    <div class="tabs" style="display:none"><button class="tab active" data-tab="diet" onclick="switchTab('diet')">🍎 饮食方案</button><button class="tab" data-tab="workout" onclick="switchTab('workout')">💪 健身方案</button><button class="tab" data-tab="schedule" onclick="switchTab('schedule')">📅 日程管理</button></div>
+    
+    <div class="card" id="tab-diet"><div class="card-title"><span class="icon" style="background:var(--accent2)">🍎</span> 今日饮食方案</div><div id="diet-content"></div><div class="tip-box" id="diet-tip"></div>
+      <div id="shopping-section" style="display:none;margin-top:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <span style="font-size:14px;font-weight:700">🛒 采购清单</span>
+          <div style="display:flex;gap:6px">
+            <button class="btn-sm" id="shop-home-btn" style="background:var(--accent2);color:#fff" onclick="switchShopMode('home')">🏠 居家</button>
+            <button class="btn-sm" id="shop-takeout-btn" style="background:#EDE8E3;color:var(--text)" onclick="switchShopMode('takeout')">🥡 外卖</button>
+          </div>
+        </div>
+        <div id="shop-home-content"></div>
+        <div id="shop-takeout-content" style="display:none"></div>
       </div>
     </div>
-    <div class="tabs" id="main-tabs">
-      <button class="tab active" data-tab="diet" onclick="switchTab('diet')">🍎 饮食方案</button>
-      <button class="tab" data-tab="workout" onclick="switchTab('workout')">💪 健身方案</button>
-      <button class="tab" data-tab="schedule" onclick="switchTab('schedule')">📅 日程管理</button>
-    </div>
-    <div class="card" id="tab-diet">
-      <div class="card-title"><span class="icon" style="background:var(--accent2)">🍎</span> 今日饮食方案</div>
-      <div id="diet-content"></div>
-      <div class="tip-box" id="diet-tip"></div>
-    </div>
-    <div class="card" id="tab-workout">
-      <div class="card-title"><span class="icon" style="background:var(--phase-luteal)">💪</span> 今日健身方案</div>
+    <div class="card" id="tab-workout"><div class="card-title"><span class="icon" style="background:var(--phase-luteal)">💪</span> 今日健身方案</div>
+      <!-- V6: 跟练博主区域 -->
+      <div class="blogger-section">
+        <div class="blogger-label">🎯 跟练博主</div>
+        <div class="fav-section" id="fav-section" style="display:none">
+          <div class="fav-section-label">⭐ 我的收藏</div>
+          <div class="fav-chips" id="fav-chips"></div>
+        </div>
+        <div class="blogger-chips" id="blogger-chips">
+          <div class="blogger-chip" data-blogger="帕梅拉">帕梅拉</div>
+          <div class="blogger-chip" data-blogger="周六野">周六野</div>
+          <div class="blogger-chip" data-blogger="韩小四">韩小四</div>
+          <div class="blogger-chip" data-blogger="美丽芭蕾">美丽芭蕾</div>
+          <div class="blogger-chip" data-blogger="Emi Wong">Emi Wong</div>
+          <div class="blogger-chip" data-blogger="欧阳春晓">欧阳春晓</div>
+        </div>
+        <div class="blogger-input-row">
+          <input type="text" class="blogger-input" id="blogger-custom" placeholder="输入其他博主名称">
+          <button class="blogger-search-btn" onclick="searchBlogger()">搜索</button>
+        </div>
+        <div class="blogger-cards" id="blogger-cards"></div>
+      </div>
+      <!-- V6: 触发视频按钮（在div外面） -->
+      <button class="demo-bilibili-btn" style="margin-top:12px" onclick="document.getElementById('video-section').style.display='block';this.style.display='none'">📺 嵌入视频跟练</button>
+      <!-- V6: 视频嵌入区（默认隐藏） -->
+      <div id="video-section" style="display:none;margin-top:10px">
+        <div class="bv-input-row">
+          <input type="text" class="bv-input" id="bv-input" placeholder="粘贴视频链接（B站/YouTube/小红书/抖音等）">
+          <button class="bv-parse-btn" onclick="parseBV()">解析</button>
+        </div>
+        <div class="video-iframe-wrap" id="video-iframe-wrap"></div>
+        <div class="video-info hidden" id="video-info">
+          <div class="video-info-title" id="vi-title"></div>
+          <div class="video-info-row">
+            <span class="video-info-blogger" id="vi-blogger"></span>
+            <input type="text" class="video-info-blogger-input hidden" id="vi-blogger-input" placeholder="输入博主名">
+            <button class="fav-btn" id="vi-fav-btn" onclick="toggleFavFromVideo()">☆</button>
+          </div>
+        </div>
+        <div class="history-section" id="history-section" style="display:none">
+          <div class="history-label" onclick="toggleHistory()">📜 历史记录 ▼</div>
+          <div class="history-list" id="history-list"></div>
+          <div class="history-toggle" id="history-toggle" onclick="toggleHistory()" style="display:none">展开全部</div>
+        </div>
+      </div>
+      <!-- V6: 训练进度 -->
+      <div class="workout-progress" style="margin-top:14px">
+        <div class="workout-progress-header">
+          <span class="workout-progress-title">今日训练进度</span>
+          <span class="workout-progress-count" id="workout-progress-count">0/0 已完成</span>
+        </div>
+        <div class="workout-progress-bar"><div class="workout-progress-fill" id="workout-progress-fill" style="width:0%"></div></div>
+      </div>
+      <div class="encouragement" id="encouragement"></div>
       <div id="workout-content"></div>
-      <div class="tip-box" id="workout-tip"></div>
+      <button class="checkin-trigger hidden" id="checkin-trigger" onclick="openCheckin()">✅ 打卡完成 · 分享成果</button>
     </div>
     <div class="card" id="tab-schedule">
-      <div class="card-title"><span class="icon" style="background:var(--accent3)">📅</span> 今日日程</div>
+      <div class="card-title"><span class="icon" style="background:var(--accent3)">📅</span> 日程管理</div>
+      <div class="time-config">
+        <div class="time-config-title">⏰ 时间设置</div>
+        <div class="time-row"><span class="time-label">🌅 起床</span><input type="time" id="tc-wake" value="07:00" onchange="saveTimeSettings()"><span class="time-hint">建议6:30-8:00</span></div>
+        <div class="time-row"><span class="time-label">🌅 早餐</span><input type="time" id="tc-breakfast" value="08:00" onchange="saveTimeSettings()"><span class="time-hint">起床后30-60min</span></div>
+        <div class="time-row"><span class="time-label">☀️ 午餐</span><input type="time" id="tc-lunch" value="12:00" onchange="saveTimeSettings()"><span class="time-hint">建议11:30-13:00</span></div>
+        <div class="time-row"><span class="time-label">🌙 晚餐</span><input type="time" id="tc-dinner" value="18:30" onchange="saveTimeSettings()"><span class="time-hint">建议17:30-19:30</span></div>
+        <div class="time-row"><span class="time-label">🌙 入睡</span><input type="time" id="tc-sleep" value="22:30" onchange="saveTimeSettings()"><span class="time-hint">建议22:00-23:00</span></div>
+        <button class="btn-sm" onclick="refreshSchedule()">应用时间</button>
+      </div>
       <div id="schedule-content"></div>
+      <div class="export-bar">
+        <button class="export-btn" onclick="exportImage()">📸 保存图片</button>
+        <button class="export-btn" onclick="addToCalendar()">📅 加入日历</button>
+      </div>
+      <button class="btn" style="background:#EDE8E3;color:var(--sub);margin-top:4px" onclick="goBack()">重新填写信息</button>
     </div>
-    <button class="btn" style="background:#EDE8E3;color:var(--sub);margin-top:4px" onclick="goBack()">重新填写信息</button>
   </div>
 </div>
+
+<!-- 健身目标说明模态框 -->
+<div class="modal-overlay" id="goal-help-modal" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="modal-box" style="max-width:340px">
+    <button class="modal-close" onclick="document.getElementById('goal-help-modal').classList.remove('show')">×</button>
+    <div class="modal-title">关于健身目标</div>
+    <div style="margin:12px 0">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:14px"><span style="font-size:20px;flex-shrink:0">🔥</span><div><div style="font-size:14px;font-weight:700;color:var(--text)">减脂</div><div style="font-size:13px;color:var(--sub);margin-top:2px">高效燃脂为主，有氧占比大</div></div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:14px"><span style="font-size:20px;flex-shrink:0">✨</span><div><div style="font-size:14px;font-weight:700;color:var(--text)">塑形</div><div style="font-size:13px;color:var(--sub);margin-top:2px">线条雕刻为主，普拉提+小重量</div></div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:14px"><span style="font-size:20px;flex-shrink:0">💪</span><div><div style="font-size:14px;font-weight:700;color:var(--text)">增肌</div><div style="font-size:13px;color:var(--sub);margin-top:2px">力量训练为主，大重量复合动作</div></div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start"><span style="font-size:20px;flex-shrink:0">🌿</span><div><div style="font-size:14px;font-weight:700;color:var(--text)">维持</div><div style="font-size:13px;color:var(--sub);margin-top:2px">均衡训练，保持健康状态</div></div></div>
+    </div>
+    <button class="btn btn-primary" onclick="document.getElementById('goal-help-modal').classList.remove('show')">知道了</button>
+  </div>
+</div>
+
+<!-- 演示模态框 -->
+<div class="modal-overlay" id="demo-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeDemoModal()">×</button>
+    <div class="modal-title" id="demo-modal-title"></div>
+    <div class="demo-modal-steps" id="demo-modal-steps"></div>
+    <button class="demo-bilibili-btn" id="demo-bilibili-btn">🔍 搜索详细教程</button>
+    <div class="demo-attribution">内容来源：各平台跟练博主 · 仅供参考</div>
+  </div>
+</div>
+
+<!-- 打卡模态框 -->
+<div class="modal-overlay" id="checkin-modal">
+  <div class="modal-box checkin-modal">
+    <div class="checkin-hero" id="checkin-hero">
+      <h2>✅ 今日打卡完成</h2>
+      <div class="checkin-hero-sub" id="checkin-hero-sub"></div>
+      <div class="checkin-motto" id="checkin-motto"></div>
+    </div>
+    <div class="checkin-body">
+      <div class="card-title" style="font-size:14px;margin-bottom:10px"><span class="icon" style="background:var(--accent2);width:22px;height:22px;font-size:12px">✓</span> 已完成训练</div>
+      <div id="checkin-exercises"></div>
+      <div class="checkin-qr-section">
+        <div class="checkin-qr-img-wrap"><img id="checkin-qr-img" src="" alt="QR"></div>
+        <div class="checkin-qr-text">
+          <div class="checkin-qr-text-title">HerCycle · 周期健身</div>
+          <div class="checkin-qr-text-desc">扫码开启你的周期健身之旅</div>
+          <div class="checkin-date-badge" id="checkin-date"></div>
+        </div>
+      </div>
+      <div class="checkin-actions">
+        <button class="checkin-save-btn" onclick="saveCheckinImage()">💾 保存图片</button>
+        <button class="checkin-share-btn" onclick="shareCheckin()">📤 分享</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-const PHASES={
-  menstrual:{name:'月经期',color:'var(--phase-menstrual)',desc:'身体正在排毒修复，允许自己慢下来。保暖、补铁、轻运动。',dietFocus:'补铁·保暖·抗炎',kcalMod:0.95,proteinMod:1.1,foods:['红糖姜茶','猪肝/鸭血','深色蔬菜','温热粥品','核桃','黑巧克力(85%)'],avoid:['生冷食物','咖啡因','高盐','酒精'],workoutType:'舒缓修复',intensity:'低',exercises:[{name:'瑜伽拜日式',sets:'15分钟',desc:'温和拉伸，缓解腹部不适'},{name:'散步',sets:'20-30分钟',desc:'户外慢走，促进血液循环'},{name:'猫牛式',sets:'8次×3组',desc:'缓解腰背酸痛'}],dietTip:'💡 本期重点：补充流失的铁和镁，选择温热食物促进血液循环。可以适当吃黑巧克力缓解情绪，避免生冷加重痛经。'},
-  follicular:{name:'卵泡期',color:'var(--phase-follicular)',desc:'能量上升期！雌激素攀升，代谢加快，适合逐步加量。',dietFocus:'高蛋白·复合碳水·抗氧化',kcalMod:1.05,proteinMod:1.2,foods:['鸡胸肉/鱼肉','糙米/燕麦','西兰花/蓝莓','鸡蛋','牛油果','豆制品'],avoid:['精制糖','油炸食品','过度加工食品'],workoutType:'力量递增',intensity:'中高',exercises:[{name:'深蹲',sets:'12次×4组',desc:'自重或哑铃，激活大肌群'},{name:'俯卧撑',sets:'8-12次×3组',desc:'跪姿或标准，上肢力量'},{name:'臀桥',sets:'15次×3组',desc:'激活臀肌，改善骨盆'},{name:'平板支撑',sets:'30秒×3组',desc:'核心稳定，躯干强化'}],dietTip:'💡 本期重点：能量充足，适合增加蛋白质和复合碳水。这是增肌的黄金期，力量训练后30分钟内补充蛋白质效果最佳。'},
-  ovulation:{name:'排卵期',color:'var(--phase-ovulation)',desc:'能量巅峰！雌激素和睾酮双高，最强运动表现期。',dietFocus:'优质蛋白·健康脂肪·高纤维',kcalMod:1.0,proteinMod:1.3,foods:['三文鱼/鳕鱼','坚果混合','藜麦','绿叶蔬菜','酸奶','亚麻籽'],avoid:['高糖零食','碳酸饮料','精制碳水'],workoutType:'高强度冲刺',intensity:'高',exercises:[{name:'HIIT训练',sets:'20分钟',desc:'30秒冲刺+30秒休息，8-10组'},{name:'弓步蹲跳',sets:'10次×3组',desc:'爆发力训练，燃脂高效'},{name:'波比跳',sets:'8次×3组',desc:'全身复合动作'},{name:'登山者',sets:'20次×3组',desc:'核心+心肺，高效燃脂'}],dietTip:'💡 本期重点：身体承受力最强，可以挑战更高强度。训练后注意补充优质蛋白和健康脂肪，帮助肌肉修复。'},
-  luteal:{name:'黄体期',color:'var(--phase-luteal)',desc:'代谢升高但精力下降，易水肿和情绪波动，温和减量。',dietFocus:'补镁·复合碳水·低钠',kcalMod:1.02,proteinMod:1.0,foods:['南瓜籽/杏仁','红薯/紫薯','深海鱼','香蕉','黑巧克力','温热汤品'],avoid:['高钠食品','过量咖啡因','辛辣刺激','酒精'],workoutType:'温和维持',intensity:'低中',exercises:[{name:'普拉提',sets:'25分钟',desc:'核心控制，低冲击全身训练'},{name:'快走/慢跑',sets:'25分钟',desc:'中等心率，维持心肺功能'},{name:'拉伸放松',sets:'15分钟',desc:'全身筋膜放松，缓解紧张'}],dietTip:'💡 本期重点：黄体期代谢比卵泡期高5-10%，但容易水肿和情绪低落。多补充镁（南瓜籽、黑巧）和维生素B6，减少钠盐摄入。想吃甜食选红薯、香蕉。'}
+// ===== V6: 配置数据 =====
+
+const BLOGGER_PHASE_KEYWORDS={
+  menstrual:{ch:'linear-gradient(135deg, #C4736E, #B86560)',chx:'#C4736E',name:'修复期',desc:'第1-5天 · 子宫内膜脱落',df:'补铁修复 · 温热舒缓',lose:'经期减脂 舒缓',shape:'经期塑形 拉伸',gain:'经期修复 增肌',maintain:'经期舒缓'},
+  follicular:{ch:'linear-gradient(135deg, #5A8C5E, #4A7A50)',chx:'#5A8C5E',name:'能量上升期',desc:'第6-14天 · 雌激素上升',df:'增肌减脂 · 高蛋白',lose:'卵泡期燃脂 力量',shape:'卵泡期塑形 线条',gain:'卵泡期增肌 力量',maintain:'卵泡期活力'},
+  ovulation:{ch:'linear-gradient(135deg, #D4A574, #C49564)',chx:'#D4A574',name:'巅峰期',desc:'第15-17天 · 排卵窗口',df:'高效燃脂 · 高强度',lose:'排卵期燃脂 HIIT',shape:'排卵期线条 雕刻',gain:'排卵期增肌 力量',maintain:'排卵期冲刺'},
+  luteal:{ch:'linear-gradient(135deg, #8B7BA8, #7B6B98)',chx:'#8B7BA8',name:'温和期',desc:'第18-28天 · 黄体酮主导',df:'温和运动 · 补镁稳定',lose:'黄体期温和燃脂',shape:'黄体期线条维持',gain:'黄体期温和增肌',maintain:'黄体期温和'},
+  pcos:{ch:'linear-gradient(135deg, #9B8B7B, #8B7B6B)',chx:'#9B8B7B',name:'温和规律期',desc:'周期不规律 · 需要耐心',df:'稳血糖 · 抗炎',lose:'PCOS温和燃脂',shape:'PCOS温和线条',gain:'PCOS温和增肌',maintain:'PCOS温和规律'}
 };
-const MEALS={
-  menstrual:{breakfast:{items:'红糖姜枣粥 + 水煮蛋1个 + 蒸南瓜',kcal:350,tip:'温热开胃，姜驱寒'},lunch:{items:'番茄猪肝汤 + 糙米饭 + 清炒菠菜',kcal:480,tip:'补铁补维C，促进铁吸收'},dinner:{items:'山药排骨汤 + 杂粮饭 + 木耳炒蛋',kcal:420,tip:'温补为主，好消化'},snack:{items:'黑巧克力2小块 + 核桃3个 + 红枣3颗',kcal:150,tip:'抗炎+补铁+满足甜食欲'}},
-  follicular:{breakfast:{items:'燕麦酸奶碗 + 蓝莓 + 水煮蛋2个',kcal:380,tip:'高蛋白启动，抗氧化'},lunch:{items:'鸡胸肉沙拉 + 糙米饭 + 西兰花',kcal:520,tip:'高蛋白+复合碳水，支撑训练'},dinner:{items:'清蒸鲈鱼 + 藜麦 + 凉拌豆腐',kcal:450,tip:'优质蛋白+植物蛋白双补'},snack:{items:'苹果1个 + 杏仁10颗 + 豆浆1杯',kcal:180,tip:'训练后30min内补充最佳'}},
-  ovulation:{breakfast:{items:'全麦吐司+牛油果+三文鱼 + 黑咖啡',kcal:400,tip:'健康脂肪+蛋白，高能启动'},lunch:{items:'牛肉藜麦碗 + 混合蔬菜 + 橄榄油',kcal:550,tip:'高蛋白高纤维，支持高强度'},dinner:{items:'虾仁炒西芹 + 紫薯 + 紫菜蛋花汤',kcal:420,tip:'低脂高蛋白，修复不增脂'},snack:{items:'希腊酸奶 + 亚麻籽 + 蓝莓',kcal:160,tip:'益生菌+Omega3，训练恢复'}},
-  luteal:{breakfast:{items:'紫薯燕麦粥 + 鸡蛋1个 + 香蕉',kcal:360,tip:'复合碳水稳血糖，缓解情绪'},lunch:{items:'清炒虾仁 + 糙米饭 + 海带汤',kcal:490,tip:'低钠高碘，减少水肿'},dinner:{items:'南瓜浓汤 + 全麦面包 + 蒸鸡胸',kcal:400,tip:'温热低钠，补镁助眠'},snack:{items:'黑巧克力2块 + 南瓜籽1小把 + 温牛奶',kcal:170,tip:'补镁抗压，改善睡眠质量'}}
+
+const BLOGGER_PHASE_DESCS={
+  menstrual:{name:'修复期',desc:'舒缓低强度，缓解不适'},
+  follicular:{name:'能量上升期',desc:'力量增肌黄金期'},
+  ovulation:{name:'巅峰期',desc:'高强度燃脂巅峰'},
+  luteal:{name:'温和期',desc:'温和瑜伽拉伸'},
+  pcos:{name:'温和规律期',desc:'低冲击稳血糖'}
 };
-function generatePlan(){
-  const h=parseFloat(document.getElementById('height').value);
-  const w=parseFloat(document.getElementById('weight').value);
-  const a=parseInt(document.getElementById('age').value);
-  const cycleLen=parseInt(document.getElementById('cycle-length').value);
-  const lastPeriod=document.getElementById('last-period').value;
-  const periodLen=parseInt(document.getElementById('period-length').value);
-  const goal=document.getElementById('goal').value;
-  if(!h||!w||!a||!lastPeriod){alert('请填写完整信息');return}
-  const last=new Date(lastPeriod);
+
+const BLOGGER_ICONS={'帕梅拉':'💃','周六野':'🏃‍♀️','韩小四':'🦵','美丽芭蕾':'🩰','Emi Wong':'🌟','欧阳春晓':'🧘‍♀️'};
+
+const PH={
+  menstrual:{
+
+    ch:'linear-gradient(135deg, #C4736E, #B86560)',chx:'#C4736E',name:'月经期',desc:'身体正在排毒修复，允许自己慢下来。保暖、补铁、轻运动。',df:'补铁·保暖·抗炎',
+    tip:'💡 本期重点：补充流失的铁和镁，选择温热食物促进血液循环。可以适当吃黑巧克力缓解情绪，避免生冷加重痛经。',    wt:{lose:'舒缓燃脂',shape:'舒缓线条',gain:'修复拉伸',maintain:'舒缓放松'},
+    it:{lose:'低',shape:'低',gain:'低',maintain:'低'},
+    km:0.95,pm:1.1,
+    f:['红糖姜茶','猪肝/鸭血','深色蔬菜','温热粥品','核桃','黑巧克力(85%)'],
+    a:['生冷食物','咖啡因','高盐','酒精'],
+    exercises:{
+      lose:[
+        {n:'经期暖宫瑜伽',s:'15分钟',d:'温和拉伸促进循环燃脂',steps:['跪坐，臀部坐于脚跟，双手撑地向前伸展','吸气抬头看向天花板，拉伸脊柱','呼气低头看向膝盖，拱背向前','猫牛式交替5次','完成轻柔的髋部打开动作']},
+        {n:'舒缓有氧步行',s:'15分钟',d:'低强度步行保持活力',steps:['选择平坦路线','以舒适步速行走，微微出汗','保持均匀呼吸','感到疲劳立即停止休息']},
+        {n:'骨盆放松练习',s:'10分钟',d:'缓解骨盆区域紧张',steps:['仰卧屈膝，双脚踩地','轻轻左右摆动骨盆','闭眼感受骨盆重量','配合深呼吸放松']}
+      ],
+      shape:[
+        {n:'轻柔拉伸',s:'15分钟',d:'放松肌肉保持线条',steps:['全身从上到下轻柔拉伸','每个动作保持20-30秒','不要追求深度，舒适为主','配合腹式呼吸']},
+        {n:'睡前放松瑜伽',s:'12分钟',d:'缓解一天疲劳',steps:['仰卧放松全身','双腿靠墙抬升','侧卧放松髋部','最后平躺冥想3分钟']}
+      ],
+      gain:[
+        {n:'呼吸训练',s:'10分钟',d:'激活核心促进恢复',steps:['仰卧，屈膝踩地','双手放在腹部感受呼吸','深吸气4秒，屏息2秒，呼气6秒','重复10次']},
+        {n:'轻柔活动关节',s:'8分钟',d:'保持关节灵活性',steps:['颈部环绕','肩部前后绕环','手腕脚踝活动','每个方向10次']}
+      ],
+      maintain:[
+        {n:'瑜伽拜日式',s:'15分钟',d:'温和拉伸缓解不适',steps:['站立，双脚并拢，双手合十于胸前','吸气，双臂上举，微微后仰','呼气，前屈折叠，双手触地','吸气，右腿后撤到骑马式','呼气，下犬式，臀部向上推','保持5个呼吸后换侧']},
+        {n:'散步',s:'20分钟',d:'户外慢走促进血液循环',steps:['选择平坦路面或公园步道','以舒适的步速行走，微微出汗','保持自然呼吸','感到疲劳就休息']},
+        {n:'猫牛式',s:'8分钟',d:'缓解腰背酸痛',steps:['四点跪姿，双手在肩正下方','吸气塌腰抬头（牛式）','呼气拱背低头（猫式）','缓慢交替8次']}
+      ]
+    },
+    tip:'💡 本期重点：补充流失的铁和镁，选择温热食物促进血液循环。可以适当吃黑巧克力缓解情绪，避免生冷加重痛经。'
+  },
+  follicular:{
+
+    ch:'linear-gradient(135deg, #5A8C5E, #4A7A50)',chx:'#5A8C5E',name:'卵泡期',desc:'能量上升期！雌激素攀升，代谢加快，适合逐步加量。',df:'高蛋白·复合碳水·抗氧化',
+    tip:'💡 本期重点：能量充足，适合增加蛋白质和复合碳水。这是增肌的黄金期，力量训练后30分钟内补充蛋白质效果最佳。',    wt:{lose:'燃脂加速',shape:'线条雕刻',gain:'力量递增',maintain:'均衡活力'},
+    it:{lose:'中高',shape:'中高',gain:'中高',maintain:'中'},
+    km:1.05,pm:1.2,
+    f:['鸡胸肉/鱼肉','糙米/燕麦','西兰花/蓝莓','鸡蛋','牛油果','豆制品'],
+    a:['精制糖','油炸食品','过度加工食品'],
+    exercises:{
+      lose:[
+        {n:'晨间有氧操',s:'20分钟',d:'中低强度持续燃脂',steps:['原地开合跳30秒','高抬腿30秒','胯下击掌30秒','休息30秒，重复4组']},
+        {n:'哑铃塑形训练',s:'20分钟',d:'小重量多组数雕刻线条',steps:['哑铃深蹲12次×3组','哑铃硬拉12次×3组','哑铃推肩12次×3组','组间休息45秒']},
+        {n:'核心稳定训练',s:'10分钟',d:'强化核心提升燃脂效率',steps:['平板支撑40秒×3组','侧支撑每侧30秒×2组','卷腹15次×3组']}
+      ],
+      shape:[
+        {n:'芭蕾形体训练',s:'25分钟',d:'优雅线条塑造',steps:['扶墙半蹲保持60秒×3组','踮脚尖行走20步×3组','腿部外展15次×3组','手臂延伸保持30秒×2组']},
+        {n:'弹力带训练',s:'15分钟',d:'精准刺激小肌群',steps:['弹力带侧平举12次×3组','弹力带划船12次×3组','弹力带臀桥15次×3组']},
+        {n:'拉伸放松',s:'10分钟',d:'保持肌肉弹性',steps:['全身动态拉伸','重点拉伸腿部臀部','肩颈放松','深呼吸结束']}
+      ],
+      gain:[
+        {n:'力量训练-下肢',s:'30分钟',d:'复合动作增肌黄金期',steps:['杠铃深蹲8次×4组','哑铃弓步蹲12次×3组','臀推15次×4组','组间休息90秒']},
+        {n:'力量训练-上肢',s:'25分钟',d:'上肢力量提升',steps:['哑铃卧推10次×4组','杠铃划船10次×4组','哑铃推肩10次×3组','二头弯举12次×3组']},
+        {n:'核心激活',s:'10分钟',d:'稳定脊柱保护关节',steps:['死虫式10次×3组','鸟狗式每侧8次×3组','平板支撑45秒×3组']}
+      ],
+      maintain:[
+        {n:'深蹲',s:'12次×4组',d:'激活大肌群基础训练',steps:['双脚与肩同宽，脚尖微外展','核心收紧，臀部后坐下蹲','下蹲至大腿与地面平行','膝盖方向与脚尖一致','脚跟发力起身']},
+        {n:'俯卧撑',s:'8-12次×3组',d:'上肢力量基础',steps:['双手略宽于肩，身体成一条直线','屈肘下降，肘部约45度角','胸部接近地面时推起','跪姿俯卧撑作为退阶']},
+        {n:'臀桥',s:'15次×3组',d:'激活臀肌改善骨盆',steps:['仰卧屈膝，双脚与髋同宽','脚跟发力，臀部向上推起','顶部收紧臀部，保持2秒','缓慢下放后再次抬起']},
+        {n:'平板支撑',s:'30秒×3组',d:'核心稳定躯干强化',steps:['前臂撑地，肘在肩正下方','身体成一条直线','收紧核心，保持均匀呼吸','初学者从15秒开始']}
+      ]
+    },
+    tip:'💡 本期重点：能量充足，适合增加蛋白质和复合碳水。这是增肌的黄金期，力量训练后30分钟内补充蛋白质效果最佳。'
+  },
+  ovulation:{
+
+    ch:'linear-gradient(135deg, #D4A574, #C49564)',chx:'#D4A574',name:'排卵期',desc:'能量巅峰！雌激素和睾酮双高，最强运动表现期。',df:'优质蛋白·健康脂肪·高纤维',
+    tip:'💡 本期重点：身体承受力最强，可以挑战更高强度。训练后注意补充优质蛋白和健康脂肪，帮助肌肉修复。',    wt:{lose:'燃脂冲刺',shape:'线条冲刺',gain:'力量巅峰',maintain:'高强度冲刺'},
+    it:{lose:'高',shape:'高',gain:'高',maintain:'高'},
+    km:1.0,pm:1.3,
+    f:['三文鱼/鳕鱼','坚果混合','藜麦','绿叶蔬菜','酸奶','亚麻籽'],
+    a:['高糖零食','碳酸饮料','精制碳水'],
+    exercises:{
+      lose:[
+        {n:'HIIT高强度燃脂',s:'20分钟',d:'30秒冲刺+30秒休息极限燃脂',steps:['30秒全力冲刺+30秒原地踏步','选择开合跳/高抬腿/深蹲跳','每组8-10个循环','热身5分钟拉伸5分钟']},
+        {n:'TABATA燃脂',s:'15分钟',d:'20秒全力+10秒休息高效燃脂',steps:['选择4个动作','每个动作20秒全力，休息10秒','完成8组','最后拉伸放松']},
+        {n:'有氧搏击',s:'15分钟',d:'拳击动作持续燃脂',steps:['直拳50次','摆拳50次','勾拳50次','踢腿50次','循环3组']}
+      ],
+      shape:[
+        {n:'核心线条雕刻',s:'20分钟',d:'腹肌马甲线打造',steps:['卷腹20次×3组','反向卷腹15次×3组','侧卷腹每侧15次×3组','平板支撑转体10次×3组']},
+        {n:'臀腿线条训练',s:'20分钟',d:'蜜桃臀紧致腿形',steps:['深蹲跳15次×3组','侧卧抬腿15次×3组','蚌式开合15次×3组','单腿臀桥每侧12次×3组']},
+        {n:'全身循环训练',s:'15分钟',d:'不增粗的全身线条',steps:['开合跳30秒','俯卧撑15秒','深蹲15秒','登山者15秒','休息15秒，重复4组']}
+      ],
+      gain:[
+        {n:'大重量复合训练',s:'35分钟',d:'睾酮高峰期的增肌黄金期',steps:['深蹲5次×5组，重量递增','硬拉5次×5组','卧推8次×4组','负重引体8次×4组','组间休息2分钟']},
+        {n:'上肢力量冲击',s:'25分钟',d:'突破力量瓶颈',steps:['哑铃卧推8次×4组（重量较大）','单臂哑铃划船10次×4组','哑铃推举10次×4组','锤式弯举12次×3组']},
+        {n:'功能性力量',s:'15分钟',d:'提升运动表现',steps:['药球砸地10次×3组','农夫行走30秒×3组','壶铃摆动15次×3组']}
+      ],
+      maintain:[
+        {n:'HIIT训练',s:'20分钟',d:'30秒冲刺+30秒休息8-10组',steps:['30秒全力冲刺+30秒原地踏步','选择开合跳/高抬腿/深蹲跳','每组8-10个循环','热身5分钟拉伸5分钟']},
+        {n:'弓步蹲跳',s:'10次×3组',d:'爆发力高效燃脂',steps:['右脚前迈一大步，下蹲至双膝90度','爆发力向上跳起，空中换腿','落地时前膝不超过脚尖','左右交替，注意缓冲']},
+        {n:'波比跳',s:'8次×3组',d:'全身复合高效燃脂',steps:['站立→下蹲双手撑地→双脚后跳','完成一个俯卧撑','双脚跳回深蹲位','爆发力跳起双手过头']},
+        {n:'登山者',s:'20次×3组',d:'核心+心肺高效燃脂',steps:['平板支撑姿势起始','交替快速收膝到胸前','保持核心收紧','速度由慢到快']}
+      ]
+    },
+    tip:'💡 本期重点：身体承受力最强，可以挑战更高强度。训练后注意补充优质蛋白和健康脂肪，帮助肌肉修复。'
+  },
+  luteal:{
+
+    ch:'linear-gradient(135deg, #8B7BA8, #7B6B98)',chx:'#8B7BA8',name:'黄体期',desc:'代谢升高但精力下降，易水肿和情绪波动，温和减量。',df:'补镁·复合碳水·低钠',
+    tip:'💡 本期重点：黄体期代谢比卵泡期高5-10%，但容易水肿和情绪低落。多补充镁（南瓜籽、黑巧）和维生素B6，减少钠盐摄入。',    wt:{lose:'温和燃脂',shape:'线条维持',gain:'修复增肌',maintain:'温和维持'},
+    it:{lose:'低中',shape:'低中',gain:'低中',maintain:'低'},
+    km:1.02,pm:1.0,
+    f:['南瓜籽/杏仁','红薯/紫薯','深海鱼','香蕉','黑巧克力','温热汤品'],
+    a:['高钠食品','过量咖啡因','辛辣刺激','酒精'],
+    exercises:{
+      lose:[
+        {n:'温和有氧步行',s:'25分钟',d:'低心率持续燃脂',steps:['选择公园或平坦路线','保持舒适步速','微微出汗即可','不要过度疲劳']},
+        {n:'舒缓瑜伽流',s:'20分钟',d:'减压放松温和燃脂',steps:['猫牛式热身','战士序列','坐姿前屈','仰卧放松','每个体式保持5个呼吸']},
+        {n:'轻度核心训练',s:'12分钟',d:'激活核心不刺激',steps:['仰卧屈膝，放松下背','轻微骨盆后倾激活腹肌','保持30秒×3组','呼吸配合']}
+      ],
+      shape:[
+        {n:'普拉提核心',s:'25分钟',d:'深层肌肉线条维持',steps:['仰卧位脊柱逐节卷起','百次呼吸','双腿夹球抬升','侧卧腿部系列','每个动作8-12次']},
+        {n:'轻柔拉伸',s:'15分钟',d:'保持肌肉弹性',steps:['全身从上到下拉伸','重点髋屈肌大腿后侧','肩颈放松序列','每个动作保持30秒']},
+        {n:'筋膜放松',s:'10分钟',d:'缓解黄体期紧张',steps:['使用泡沫轴放松背部','放松髋外侧','放松大腿前侧','深呼吸结束']}
+      ],
+      gain:[
+        {n:'中等重量训练',s:'25分钟',d:'保持肌肉量的温和增肌',steps:['深蹲12次×3组（中等重量）','罗马尼亚硬拉12次×3组','高位下拉12次×3组','组间休息60秒']},
+        {n:'修复性训练',s:'15分钟',d:'促进恢复的轻度力量',steps:['弹力带热身','轻重量的复合动作','专注于肌肉发力感','不要追求大重量']},
+        {n:'呼吸与放松',s:'10分钟',d:'调节神经系统促进恢复',steps:['仰卧完全放松','腹式深呼吸','渐进式肌肉放松','冥想5分钟']}
+      ],
+      maintain:[
+        {n:'普拉提',s:'25分钟',d:'核心控制低冲击全身',steps:['仰卧位脊柱逐节卷起卷下','核心发力，动作缓慢可控','配合呼吸','每个动作8-12次']},
+        {n:'快走/慢跑',s:'25分钟',d:'中等心率维持心肺',steps:['快走步频加快，手臂自然摆动','慢跑保持能说话的配速','心率在最大心率60-70%','感到不适立即停止']},
+        {n:'拉伸放松',s:'15分钟',d:'全身筋膜放松缓解紧张',steps:['每个部位静态拉伸15-30秒','不弹振式拉伸','重点髋屈肌大腿后侧肩颈','深呼吸帮助放松']}
+      ]
+    },
+    tip:'💡 本期重点：黄体期代谢比卵泡期高5-10%，但容易水肿和情绪低落。多补充镁（南瓜籽、黑巧）和维生素B6，减少钠盐摄入。想吃甜食选红薯、香蕉。'
+  },
+  pcos:{
+
+    ch:'linear-gradient(135deg, #8B7BA8, #7B6B98)',chx:'#8B7BA8',name:'温和规律期',desc:'周期不规律时，温和规律为主，稳血糖抗炎。',df:'稳血糖·抗炎·补肌醇',
+    tip:'💡 温和规律期建议：重点是稳血糖和抗炎。运动以规律中等强度为主，避免长时间高强度增加皮质醇。建议定期监测激素水平。<br><br>⚠️ <strong>免责声明</strong>：本方案由AI基于公开文献生成，仅供参考，不构成医疗建议。PCOS个体差异大，任何饮食和运动方案的调整请务必结合专业医生意见。',    wt:{lose:'温和燃脂',shape:'温和线条',gain:'温和增肌',maintain:'温和均衡'},
+    it:{lose:'低',shape:'低',gain:'低',maintain:'低'},
+    km:1.0,pm:1.15,
+    f:['纯燕麦片','芹菜/苦瓜','牛肉/鸡胸','豆腐/豆浆','木耳/银耳','南瓜/紫薯','肉桂粉','核桃/花生'],
+    a:['含糖饮料','白米饭白面条','蛋糕饼干','油炸食品','乳饮料（非纯奶）'],
+    exercises:{
+      lose:[
+        {n:'快走/椭圆机',s:'30分钟',d:'中等心率改善胰岛素敏感性',steps:['椭圆机阻力中等，保持匀速','快走步频100-120步/分钟','保持心率在最大心率60-70%','持续30分钟可分段完成']},
+        {n:'轻柔自重训练',s:'15分钟',d:'低冲击温和燃脂',steps:['椅子深蹲10次×3组','侧卧抬腿15次×2组','猫牛式10次','全身拉伸5分钟']},
+        {n:'身心连接练习',s:'10分钟',d:'减压调节自主神经',steps:['深呼吸5分钟','身体扫描冥想','感受身体各部位','放松全身']}
+      ],
+      shape:[
+        {n:'普拉提修复',s:'25分钟',d:'温和线条塑造',steps:['仰卧骨盆倾斜练习','百次呼吸','单腿画圈','侧卧腿部系列','全身拉伸']},
+        {n:'弹力带轻训',s:'15分钟',d:'低冲击线条优化',steps:['弹力带行走侧步10次×3组','弹力带髋外展15次×3组','弹力带站姿后踢15次×3组']},
+        {n:'全身拉伸',s:'10分钟',d:'保持肌肉弹性',steps:['全身动态拉伸','重点髋部肩颈','每个动作保持20秒','深呼吸配合']}
+      ],
+      gain:[
+        {n:'适度力量训练',s:'20分钟',d:'温和增肌提升代谢',steps:['深蹲12次×3组','臀桥15次×3组','俯卧撑8次×3组','组间休息60秒']},
+        {n:'哑铃轻训',s:'15分钟',d:'小重量多组数增肌',steps:['哑铃深蹲12次×3组','哑铃划船10次×3组','哑铃推肩10次×3组']},
+        {n:'恢复放松',s:'10分钟',d:'促进肌肉恢复',steps:['泡沫轴放松','静态拉伸','温热敷（可选）','充足睡眠建议']}
+      ],
+      maintain:[
+        {n:'快走/椭圆机',s:'30分钟',d:'中等心率规律运动',steps:['椭圆机阻力中等保持匀速','快走步频100-120步/分钟','保持心率60-70%','持续30分钟可分段']},
+        {n:'自重力量训练',s:'20分钟',d:'深蹲+臀桥+俯卧撑循环',steps:['深蹲12次→臀桥15次→俯卧撑8次为1轮','每轮休息60秒','完成3轮','注意动作质量']},
+        {n:'瑜伽/拉伸',s:'15分钟',d:'缓解压力调节自主神经',steps:['选择阴瑜伽或修复瑜伽','每个体式保持3-5分钟','关注呼吸','重点放松腰腹骨盆']}
+      ]
+    },
+    tip:'💡 温和规律期重点：稳血糖和抗炎。补充肌醇（燕麦、豆类）有助于改善卵泡发育。运动以规律中等强度为主，避免长时间高强度增加皮质醇。建议定期监测激素水平。<br><br>━━━━━━━━━━━━━━━━━━<br><br>⚠️ <strong>免责声明</strong>：本方案由AI基于公开文献生成，仅供参考，不构成医疗建议。PCOS个体差异大，任何饮食和运动方案的调整请务必结合专业医生意见。使用本方案的风险由用户自行承担。<br><br>📚 <strong>参考来源</strong>：<br>• Arentz S, et al. <em>PCOS Diet and Lifestyle: A Systematic Review</em>. J Acad Nutr Diet. 2021.<br>• Teede HJ, et al. <em>International PCOS Guideline</em>. Monash University, 2023.<br>• Sima P, et al. <em>Inositol and PCOS: A Review</em>. Gynecol Endocrinol. 2022.<br>• Harrison CL, et al. <em>Exercise in PCOS</em>. Hum Reprod Update. 2019.'
+  }
+};
+
+const ML={
+  menstrual:{
+    lose:{
+      breakfast:{items:'红糖姜枣粥 + 水煮蛋1个 + 蒸南瓜',kcal:280,tip:'温热低脂，姜驱寒'},
+      lunch:{items:'番茄猪肝汤（去油）+ 糙米饭半碗 + 蒜蓉菠菜',kcal:380,tip:'补铁低脂，膳食纤维丰富'},
+      dinner:{items:'山药排骨汤（少排骨）+ 杂粮饭半碗 + 木耳拌黄瓜',kcal:340,tip:'温补低热量，好消化'},
+      snack:{items:'黑巧克力1小块 + 核桃2个',kcal:120,tip:'补铁抗炎满足感'}
+    },
+    shape:{
+      breakfast:{items:'红糖姜枣粥 + 水煮蛋1个 + 蒸紫薯小块',kcal:320,tip:'温热饱腹，微量元素丰富'},
+      lunch:{items:'清蒸鲈鱼 + 糙米饭 + 凉拌木耳腐竹',kcal:400,tip:'优质蛋白，温补不胖'},
+      dinner:{items:'番茄豆腐汤 + 藜麦半碗 + 清炒油麦菜',kcal:360,tip:'植物蛋白+复合碳水'},
+      snack:{items:'核桃3个 + 红枣2颗',kcal:140,tip:'健康脂肪补铁'}
+    },
+    gain:{
+      breakfast:{items:'红糖姜枣粥 + 水煮蛋2个 + 蒸南瓜 + 核桃5个',kcal:420,tip:'高热量高营养，经期补充'},
+      lunch:{items:'番茄猪肝汤 + 糙米饭 + 清炒菠菜 + 花生小半把',kcal:520,tip:'铁+蛋白质+健康脂肪'},
+      dinner:{items:'山药排骨汤 + 杂粮饭 + 木耳炒蛋 + 红糖姜茶',kcal:480,tip:'温补修复，营养全面'},
+      snack:{items:'黑巧克力3小块 + 核桃5个 + 红枣5颗',kcal:200,tip:'高热量补铁满足甜食'}
+    },
+    maintain:{
+      breakfast:{items:'红糖姜枣粥 + 水煮蛋1个 + 蒸南瓜',kcal:350,tip:'温热开胃，姜驱寒'},
+      lunch:{items:'番茄猪肝汤 + 糙米饭 + 清炒菠菜',kcal:480,tip:'补铁补维C，促进铁吸收'},
+      dinner:{items:'山药排骨汤 + 杂粮饭 + 木耳炒蛋',kcal:420,tip:'温补为主，好消化'},
+      snack:{items:'黑巧克力2小块 + 核桃3个 + 红枣3颗',kcal:150,tip:'抗炎+补铁+满足甜食欲'}
+    }
+  },
+  follicular:{
+    lose:{
+      breakfast:{items:'燕麦粥（无糖）+ 水煮蛋1个 + 蓝莓一小把',kcal:300,tip:'高蛋白低碳，启动燃脂'},
+      lunch:{items:'鸡胸肉沙拉（少油）+ 糙米饭2/3碗',kcal:420,tip:'高蛋白复合碳水支撑训练'},
+      dinner:{items:'清蒸鲈鱼 + 藜麦 + 凉拌豆腐',kcal:380,tip:'优质蛋白+植物蛋白双补'},
+      snack:{items:'圣女果5颗 + 无糖豆浆半杯',kcal:100,tip:'训练后低卡补充'}
+    },
+    shape:{
+      breakfast:{items:'燕麦酸奶碗 + 水煮蛋1个 + 蓝莓 + 杏仁5颗',kcal:380,tip:'蛋白质+健康脂肪线条优化'},
+      lunch:{items:'牛油果鸡胸沙拉 + 糙米饭 + 橄榄油少许可',kcal:460,tip:'优质脂肪+蛋白质+复合碳水'},
+      dinner:{items:'虾仁炒西兰花 + 藜麦 + 紫菜蛋花汤',kcal:420,tip:'低脂高蛋白晚餐'},
+      snack:{items:'希腊酸奶100g + 亚麻籽',kcal:140,tip:'益生菌+Omega3恢复'}
+    },
+    gain:{
+      breakfast:{items:'燕麦粥 + 水煮蛋2个 + 蓝莓 + 坚果混合 + 牛奶',kcal:480,tip:'高碳水高蛋白增肌早餐'},
+      lunch:{items:'鸡胸肉+糙米+西兰花+牛油果+鸡蛋',kcal:580,tip:'完整增肌餐盘，营养全面'},
+      dinner:{items:'牛肉藜麦碗 + 豆腐 + 蔬菜 + 橄榄油',kcal:520,tip:'红肉+复合碳水高效增肌'},
+      snack:{items:'蛋白粉奶昔 + 香蕉 + 花生酱',kcal:280,tip:'训练后高效蛋白质补充'}
+    },
+    maintain:{
+      breakfast:{items:'燕麦酸奶碗 + 蓝莓 + 水煮蛋2个',kcal:380,tip:'高蛋白启动，抗氧化'},
+      lunch:{items:'鸡胸肉沙拉 + 糙米饭 + 西兰花',kcal:520,tip:'高蛋白+复合碳水，支撑训练'},
+      dinner:{items:'清蒸鲈鱼 + 藜麦 + 凉拌豆腐',kcal:450,tip:'优质蛋白+植物蛋白双补'},
+      snack:{items:'苹果1个 + 杏仁10颗 + 豆浆1杯',kcal:180,tip:'训练后30min内补充最佳'}
+    }
+  },
+  ovulation:{
+    lose:{
+      breakfast:{items:'全麦吐司1片+牛油果半颗+水煮蛋1个',kcal:320,tip:'健康脂肪启动，燃脂模式'},
+      lunch:{items:'虾仁藜麦碗 + 混合蔬菜 + 橄榄油少许',kcal:420,tip:'高蛋白低脂，支持高强度'},
+      dinner:{items:'番茄龙利鱼 + 紫薯1小个 + 凉拌菠菜',kcal:360,tip:'低脂高蛋白修复不增脂'},
+      snack:{items:'希腊酸奶100g + 蓝莓',kcal:120,tip:'益生菌+抗氧化'}
+    },
+    shape:{
+      breakfast:{items:'全麦吐司+牛油果+三文鱼 + 黑咖啡',kcal:400,tip:'健康脂肪+蛋白高能启动'},
+      lunch:{items:'牛肉藜麦碗 + 混合蔬菜 + 橄榄油',kcal:480,tip:'高蛋白高纤维线条冲刺'},
+      dinner:{items:'虾仁炒西芹 + 紫薯 + 紫菜蛋花汤',kcal:400,tip:'低脂高蛋白线条优化'},
+      snack:{items:'坚果混合一小把 + 希腊酸奶',kcal:160,tip:'健康脂肪+蛋白质'}
+    },
+    gain:{
+      breakfast:{items:'全麦吐司2片+牛油果+三文鱼+鸡蛋2个+坚果+黑咖啡',kcal:560,tip:'高碳水高蛋白巅峰增肌'},
+      lunch:{items:'牛肉藜麦碗+鸡胸+牛油果+蔬菜+鸡蛋+橄榄油',kcal:660,tip:'完整增肌大餐，营养爆表'},
+      dinner:{items:'虾仁炒西芹+紫薯+牛肉+豆腐+汤品',kcal:540,tip:'多蛋白来源增肌修复'},
+      snack:{items:'蛋白粉奶昔 + 香蕉 + 花生酱 + 坚果',kcal:340,tip:'训练后黄金补充窗口'}
+    },
+    maintain:{
+      breakfast:{items:'全麦吐司+牛油果+三文鱼 + 黑咖啡',kcal:400,tip:'健康脂肪+蛋白，高能启动'},
+      lunch:{items:'牛肉藜麦碗 + 混合蔬菜 + 橄榄油',kcal:550,tip:'高蛋白高纤维，支持高强度'},
+      dinner:{items:'虾仁炒西芹 + 紫薯 + 紫菜蛋花汤',kcal:420,tip:'低脂高蛋白，修复不增脂'},
+      snack:{items:'希腊酸奶 + 亚麻籽 + 蓝莓',kcal:160,tip:'益生菌+Omega3，训练恢复'}
+    }
+  },
+  luteal:{
+    lose:{
+      breakfast:{items:'紫薯燕麦粥（无糖）+ 鸡蛋1个',kcal:300,tip:'复合碳水稳血糖低热量'},
+      lunch:{items:'清蒸虾仁 + 糙米饭2/3碗 + 海带汤',kcal:400,tip:'低钠高碘减少水肿'},
+      dinner:{items:'南瓜浓汤（少油）+ 全麦面包1片 + 蒸鸡胸',kcal:340,tip:'温热低钠，补镁助眠'},
+      snack:{items:'南瓜籽1小把 + 温牛奶半杯',kcal:120,tip:'补镁抗压改善睡眠'}
+    },
+    shape:{
+      breakfast:{items:'紫薯燕麦粥 + 鸡蛋1个 + 香蕉半根',kcal:360,tip:'复合碳水稳血糖线条优化'},
+      lunch:{items:'清蒸虾仁 + 糙米饭 + 海带汤 + 凉拌木耳',kcal:450,tip:'低钠高蛋白维持线条'},
+      dinner:{items:'南瓜浓汤 + 全麦面包 + 蒸鸡胸 + 焯水菠菜',kcal:400,tip:'温热低钠，营养均衡'},
+      snack:{items:'黑巧克力1块 + 南瓜籽 + 温牛奶',kcal:160,tip:'补镁抗压改善情绪'}
+    },
+    gain:{
+      breakfast:{items:'紫薯燕麦粥 + 鸡蛋2个 + 香蕉 + 坚果 + 红枣',kcal:460,tip:'高碳水补镁缓解情绪'},
+      lunch:{items:'清蒸虾仁 + 糙米饭 + 牛肉 + 海带汤 + 蔬菜',kcal:560,tip:'高蛋白低钠补镁增肌'},
+      dinner:{items:'南瓜浓汤 + 全麦面包 + 蒸鸡胸 + 三文鱼 + 坚果',kcal:500,tip:'温热全面补充营养'},
+      snack:{items:'黑巧克力2块 + 南瓜籽 + 温牛奶 + 核桃',kcal:240,tip:'高热量补镁助眠'}
+    },
+    maintain:{
+      breakfast:{items:'紫薯燕麦粥 + 鸡蛋1个 + 香蕉',kcal:360,tip:'复合碳水稳血糖，缓解情绪'},
+      lunch:{items:'清炒虾仁 + 糙米饭 + 海带汤',kcal:490,tip:'低钠高碘，减少水肿'},
+      dinner:{items:'南瓜浓汤 + 全麦面包 + 蒸鸡胸',kcal:400,tip:'温热低钠，补镁助眠'},
+      snack:{items:'黑巧克力2块 + 南瓜籽1小把 + 温牛奶',kcal:170,tip:'补镁抗压，改善睡眠质量'}
+    }
+  },
+  pcos:{
+    lose:{
+      breakfast:{items:'燕麦粥（加肉桂粉）+ 水煮蛋1个 + 圣女果',kcal:300,tip:'肉桂稳血糖，低GI启动'},
+      lunch:{items:'芹菜炒牛肉（少油）+ 杂粮饭2/3碗 + 凉拌黄瓜',kcal:380,tip:'牛肉补铁，芹菜稳血糖'},
+      dinner:{items:'番茄豆腐汤 + 蒸南瓜 + 焯水菠菜',kcal:340,tip:'低GI高蛋白，南瓜代替主食'},
+      snack:{items:'核桃2个 + 小黄瓜1根',kcal:100,tip:'稳血糖低热量'}
+    },
+    shape:{
+      breakfast:{items:'燕麦粥（加肉桂粉）+ 水煮蛋2个 + 圣女果 + 核桃3个',kcal:380,tip:'肉桂稳血糖，高蛋白线条'},
+      lunch:{items:'芹菜炒牛肉 + 杂粮饭 + 凉拌木耳 + 橄榄油少许',kcal:440,tip:'补铁稳血糖线条优化'},
+      dinner:{items:'番茄豆腐鱼头汤 + 蒸南瓜 + 焯水菠菜',kcal:380,tip:'优质蛋白低GI'},
+      snack:{items:'希腊酸奶100g + 亚麻籽',kcal:140,tip:'益生菌+Omega3'}
+    },
+    gain:{
+      breakfast:{items:'燕麦粥（加肉桂粉）+ 水煮蛋2个 + 牛肉 + 坚果 + 圣女果',kcal:480,tip:'高蛋白稳血糖增肌'},
+      lunch:{items:'芹菜炒牛肉 + 杂粮饭 + 豆腐 + 木耳 + 橄榄油',kcal:520,tip:'完整蛋白质来源'},
+      dinner:{items:'番茄豆腐鱼头汤 + 糙米饭 + 虾仁 + 蔬菜',kcal:480,tip:'多蛋白增肌修复'},
+      snack:{items:'核桃5个 + 无糖豆浆1杯 + 鸡蛋1个',kcal:220,tip:'健康脂肪+蛋白质补充'}
+    },
+    maintain:{
+      breakfast:{items:'燕麦粥（加肉桂粉）+ 水煮蛋2个 + 圣女果一小把',kcal:370,tip:'肉桂粉超市调料区有售，燕麦选纯燕麦片不加糖'},
+      lunch:{items:'芹菜炒牛肉 + 杂粮饭 + 凉拌木耳黄瓜',kcal:490,tip:'牛肉补铁补锌，芹菜辅助稳血糖，超市均好买'},
+      dinner:{items:'番茄豆腐鱼头汤 + 蒸南瓜 + 焯水菠菜',kcal:420,tip:'豆腐+鱼头补优质蛋白，番茄低GI，南瓜代替主食'},
+      snack:{items:'核桃5个 + 小黄瓜1根 + 无糖豆浆1杯',kcal:160,tip:'豆浆选无糖款，核桃补锌稳血糖'}
+    }
+  }
+};
+
+// ===== V6: 全局状态 =====
+let CP={phase:'',phaseName:'',goal:'',goalLabel:'',tdee:0,scheduleItems:[],meals:{},colorHex:'',completedExercises:[],selectedBlogger:''};
+  restoreExProgress();
+
+// ===== V6: 辅助函数 =====
+
+function toggleHelp(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const cs=getComputedStyle(el);
+  if(cs.display==='none'||el.style.display==='none'){el.style.display='block';}
+  else{el.style.display='none';}
+}
+
+function selectGoal(el){
+  document.querySelectorAll('.goal-chip').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('goal').value=el.dataset.goal;
+  document.getElementById('fg-goal').classList.remove('error');
+}
+
+function switchTab(tab,scroll){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector('[data-tab="'+tab+'"]').classList.add('active');
+  if(scroll!==false){
+    const el=document.getElementById('tab-'+tab);
+    if(el){
+      const header=document.querySelector('.header');
+      const tabBar=document.querySelector('.tabs');
+      const hH=header?header.offsetHeight:0;
+      const tH=tabBar?tabBar.offsetHeight:54;
+      const offset=hH+tH+8;
+      const top=el.getBoundingClientRect().top+window.scrollY-offset;
+      window.scrollTo({top,behavior:'smooth'})
+    }
+  }
+}
+
+let _tabObserver=null;
+function initTabObserver(){
+  if(_tabObserver)_tabObserver.disconnect();
+  const tabs=['diet','workout','schedule'];
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const id=entry.target.id;
+        const tab=id.replace('tab-','');
+        document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+        const btn=document.querySelector('[data-tab="'+tab+'"]');
+        if(btn)btn.classList.add('active');
+      }
+    });
+  },{rootMargin:'-54px 0px -60% 0px',threshold:0});
+  tabs.forEach(t=>{const el=document.getElementById('tab-'+t);if(el)observer.observe(el)});
+  _tabObserver=observer;
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+function clearErrors(){document.querySelectorAll('.form-group.error').forEach(g=>g.classList.remove('error'))}
+function toMin(t){const[h,m]=t.split(':').map(Number);return h*60+m}
+function toStr(m){return Math.floor(m/60).toString().padStart(2,'0')+':'+(m%60).toString().padStart(2,'0')}
+
+// ===== V6: 打卡相关函数 =====
+const CHECKIN_MOTTOS=[
+  '自律即自由，今天又近了一步',
+  '身体会记住每一次坚持',
+  '不跟别人比，只跟昨天的自己比',
+  '每一滴汗水都不会被辜负',
+  '坚持下去，身体会给你答案'
+];
+const PHASE_SHARE_NAMES={
+  menstrual:'修复期',follicular:'能量上升期',ovulation:'巅峰期',luteal:'温和期',pcos:'温和规律期'
+};
+
+function openCheckin(){
+  const ph=PH[CP.phase];
+  if(!ph)return;
   const today=new Date();
-  const diffDays=Math.floor((today-last)/86400000);
-  const cycleDay=((diffDays%cycleLen)+cycleLen)%cycleLen+1;
-  let phase;
-  if(cycleDay<=periodLen)phase='menstrual';
-  else if(cycleDay<=Math.floor(cycleLen*0.46))phase='follicular';
-  else if(cycleDay<=Math.floor(cycleLen*0.54))phase='ovulation';
-  else phase='luteal';
+  const dateStr=(today.getMonth()+1)+'月'+today.getDate()+'日';
+  const dayNum=document.getElementById('phase-day-num').textContent;
+  const shareName=PHASE_SHARE_NAMES[CP.phase]||ph.name;
+  const heroSub=CP.phase==='pcos'?shareName:(shareName+' · '+dayNum);
+  const motto=CHECKIN_MOTTOS[Math.floor(Math.random()*CHECKIN_MOTTOS.length)];
+  const hero=document.getElementById('checkin-hero');
+  hero.style.background='linear-gradient(135deg,'+CP.colorHex+','+CP.colorHex+'dd)';
+  document.getElementById('checkin-hero-sub').textContent=heroSub;
+  document.getElementById('checkin-motto').textContent='"'+motto+'"';
+  document.getElementById('checkin-date').textContent=dateStr;
+  
+  let exercisesHtml='';
+  CP.completedExercises.forEach(key=>{
+    let name='';
+    if(key===CP.phase+'-1'){name='空腹有氧'}
+    else if(key===CP.phase+'-2'){name='弹力带臀腿'}
+    else{
+      const[phKey,idx]=key.split('-');
+      if(phKey===CP.phase){
+        const exs=PH[phKey]?PH[phKey].exercises[CP.goal]||PH[phKey].exercises.maintain:null;
+        if(exs){const ex=exs[parseInt(idx)];if(ex)name=ex.n}
+      }
+    }
+    if(name){
+      exercisesHtml+='<div class="checkin-exercise"><div class="checkin-exercise-check">✓</div><div class="checkin-exercise-name">'+name+'</div><div class="checkin-exercise-tag">已完成</div></div>';
+    }
+  });
+  if(!exercisesHtml)exercisesHtml='<div style="font-size:13px;color:var(--sub);text-align:center;padding:12px">今日完成0项训练，继续加油！</div>';
+  document.getElementById('checkin-exercises').innerHTML=exercisesHtml;
+  const qrImg=document.getElementById('checkin-qr-img');
+  try{const qc=generateQRCanvas('https://christina412.github.io/hercycle/',160);qrImg.src=qc.toDataURL();qrImg.style.display='block';}catch(e){qrImg.style.display='none';}
+  document.getElementById('checkin-modal').classList.add('show');
+}
+
+function closeCheckinModal(){
+  document.getElementById('checkin-modal').classList.remove('show');
+}
+
+document.getElementById('checkin-modal').addEventListener('click',function(e){
+  if(e.target===this)closeCheckinModal();
+});
+
+function saveCheckinImage(){
+  const canvas=document.createElement('canvas');
+  const W=420,dpr=2;
+  canvas.width=W*dpr;
+  const ctx=canvas.getContext('2d');
+  const exCount=CP.completedExercises.length;
+  const totalH=280+exCount*32+120;
+  canvas.height=totalH*dpr;
+  ctx.scale(dpr,dpr);
+  ctx.fillStyle='#FAF7F5';
+  ctx.fillRect(0,0,W,totalH);
+  const grad=ctx.createLinearGradient(0,0,W,0);
+  grad.addColorStop(0,CP.colorHex);
+  grad.addColorStop(1,CP.colorHex+'cc');
+  ctx.fillStyle=grad;
+  roundRect(ctx,0,0,W,150,0);
+  ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,0.08)';
+  ctx.beginPath();ctx.arc(W-30,30,60,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(W-80,120,40,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#fff';
+  ctx.font='bold 24px -apple-system,PingFang SC,sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText('✅ 今日打卡完成',W/2,55);
+  const shareName=PHASE_SHARE_NAMES[CP.phase]||PH[CP.phase].name;
+  const dayNum=document.getElementById('phase-day-num').textContent;
+  const canvasSub=CP.phase==='pcos'?shareName:(shareName+' · '+dayNum);
+  ctx.font='14px sans-serif';
+  ctx.globalAlpha=0.85;
+  ctx.fillText(canvasSub,W/2,85);
+  ctx.globalAlpha=1;
+  const motto=document.getElementById('checkin-motto').textContent;
+  ctx.font='bold 16px sans-serif';
+  ctx.fillText(motto,W/2,118);
+  const today=new Date();
+  const dateStr=today.getFullYear()+'.'+(today.getMonth()+1)+'.'+today.getDate();
+  ctx.font='12px sans-serif';
+  ctx.globalAlpha=0.7;
+  ctx.fillText(dateStr,W/2,142);
+  ctx.globalAlpha=1;
+  ctx.textAlign='left';
+  let y=175;
+  CP.completedExercises.forEach(key=>{
+    let name='';
+    if(key===CP.phase+'-1'){name='🔥 空腹有氧'}
+    else if(key===CP.phase+'-2'){name='🎯 弹力带臀腿'}
+    else{
+      const[phKey,idx]=key.split('-');
+      if(phKey===CP.phase){
+        const exs=PH[phKey]?PH[phKey].exercises[CP.goal]||PH[phKey].exercises.maintain:null;
+        if(exs){const ex=exs[parseInt(idx)];if(ex)name=ex.n}
+      }
+    }
+    if(name){
+      ctx.fillStyle='#5A8C5E';
+      ctx.beginPath();ctx.arc(36,y+8,10,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#fff';
+      ctx.font='bold 10px sans-serif';
+      ctx.fillText('✓',31,y+12);
+      ctx.fillStyle='#2D2A26';
+      ctx.font='500 14px -apple-system,PingFang SC,sans-serif';
+      ctx.fillText(name,54,y+12);
+      ctx.fillStyle='rgba(90,140,94,0.12)';
+      const tagW=50;
+      roundRect(ctx,W-36-tagW,y,tagW,20,10);
+      ctx.fill();
+      ctx.fillStyle='#5A8C5E';
+      ctx.font='600 10px sans-serif';
+      ctx.textAlign='center';
+      ctx.fillText('已完成',W-36-tagW/2,y+13);
+      ctx.textAlign='left';
+      y+=32;
+    }
+  });
+  y+=8;
+  ctx.strokeStyle='#EDE8E3';
+  ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(24,y);ctx.lineTo(W-24,y);ctx.stroke();
+  y+=16;
+  roundRect(ctx,24,y,W-48,80,12);
+  ctx.fillStyle='#F0EDEA';
+  ctx.fill();
+  roundRect(ctx,36,y+10,60,60,6);
+  ctx.fillStyle='#fff';
+  ctx.fill();
+  ctx.fillStyle='#2D2A26';
+  ctx.font='bold 13px -apple-system,PingFang SC,sans-serif';
+  ctx.fillText('HerCycle · 周期健身',110,y+30);
+  ctx.fillStyle='#8C8578';
+  ctx.font='11px sans-serif';
+  ctx.fillText('扫码开启你的周期健身之旅',110,y+48);
+  ctx.fillStyle='rgba(45,42,38,0.06)';
+  const badgeW=70;
+  roundRect(ctx,110,y+56,badgeW,18,9);
+  ctx.fill();
+  ctx.fillStyle='#8C8578';
+  ctx.font='10px sans-serif';
+  ctx.fillText(dateStr,115,y+69);
+  // Generate QR code via canvas instead of external image (avoids CORS)
+  try{
+    const qrCanvas=generateQRCanvas('https://christina412.github.io/hercycle/',56);
+    ctx.drawImage(qrCanvas,38,y+12,56,56);
+  }catch(e){
+    ctx.fillStyle='#D0D0D0';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText('QR Code',36+30,y+10+35);ctx.textAlign='left';
+  }
+  downloadCanvas(canvas);
+}
+
+// Pre-generated QR code for https://christina412.github.io/hercycle/
+const QR_SIZE=29;
+const QR_DATA=["11111110100011111110001111111","10000010000000101011001000001","10111010010110111111101011101","10111010111111100010001011101","10111010101000111000001011101","10000010100101001001101000001","11111110101010101010101111111","00000000110100001101100000000","10001011100100000100111111001","01111001111101111110111111111","00101010011110111100011000001","10111001111000101101000111011","10010110011010101101010000010","11100000100100111000111111111","01110111000011110110101111101","10010100011100110110011100011","10110011001101100101010100010","11001100011010111010101111011","00000011101111111000010100101","00101100111101011100101110011","11001010001101010111111111001","00000000101111111110100010001","11111110110010010011101011101","10000010011100100100100010011","10111010111001110101111111001","10111010010001010110110000001","10111010001111010100010001111","10000010000110000110100011011","11111110111000010100101011010"];
+
+function generateQRCanvas(text,size){
+  const c=document.createElement('canvas');c.width=size;c.height=size;
+  const ctx=c.getContext('2d');
+  const cell=size/QR_SIZE;
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,size,size);
+  ctx.fillStyle='#2D2A26';
+  for(let r=0;r<QR_SIZE;r++){for(let c2=0;c2<QR_SIZE;c2++){
+    if(QR_DATA[r][c2]==='1')ctx.fillRect(Math.round(c2*cell),Math.round(r*cell),Math.ceil(cell),Math.ceil(cell));
+  }}
+  return c;
+}
+
+function downloadCanvas(canvas){
+  canvas.toBlob(blob=>{
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='HerCycle-今日打卡.png';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('✅ 打卡图片已保存');
+  },'image/png');
+}
+
+function shareCheckin(){
+  const motto=document.getElementById('checkin-motto').textContent;
+  const shareName=PHASE_SHARE_NAMES[CP.phase]||PH[CP.phase].name;
+  const dayNum=document.getElementById('phase-day-num').textContent;
+  const shareText=motto+' — '+shareName+(CP.phase==='pcos'?'':' '+dayNum)+'，坚持周期健身，做自己身体的主人。\n\n🔗 开启你的周期健身之旅：https://christina412.github.io/hercycle/';
+  // Try to get canvas image blob for sharing
+  const canvas=document.createElement('canvas');
+  const W=420,dpr=2;
+  canvas.width=W*dpr;
+  const ctx=canvas.getContext('2d');
+  const exCount=CP.completedExercises.length;
+  const totalH=280+exCount*32+120;
+  canvas.height=totalH*dpr;
+  ctx.scale(dpr,dpr);
+  ctx.fillStyle='#FAF7F5';ctx.fillRect(0,0,W,totalH);
+  const grad=ctx.createLinearGradient(0,0,W,0);
+  grad.addColorStop(0,CP.colorHex);grad.addColorStop(1,CP.colorHex+'cc');
+  ctx.fillStyle=grad;roundRect(ctx,0,0,W,150,0);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,0.08)';
+  ctx.beginPath();ctx.arc(W-30,30,60,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(W-80,120,40,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#fff';ctx.font='bold 24px -apple-system,PingFang SC,sans-serif';ctx.textAlign='center';
+  ctx.fillText('✅ 今日打卡完成',W/2,55);
+  const canvasSub2=CP.phase==='pcos'?shareName:(shareName+' · '+dayNum);
+  ctx.font='14px sans-serif';ctx.globalAlpha=0.85;ctx.fillText(canvasSub2,W/2,85);ctx.globalAlpha=1;
+  ctx.font='bold 16px sans-serif';ctx.fillText(motto,W/2,118);
+  const today2=new Date();const dateStr2=today2.getFullYear()+'.'+(today2.getMonth()+1)+'.'+today2.getDate();
+  ctx.font='12px sans-serif';ctx.globalAlpha=0.7;ctx.fillText(dateStr2,W/2,142);ctx.globalAlpha=1;
+  ctx.textAlign='left';let y2=175;
+  CP.completedExercises.forEach(key=>{
+    let name='';
+    if(key===CP.phase+'-1'){name='空腹有氧'}
+    else if(key===CP.phase+'-2'){name='弹力带臀腿'}
+    else{const[phKey,idx]=key.split('-');if(phKey===CP.phase){const exs=PH[phKey]?PH[phKey].exercises[CP.goal]||PH[phKey].exercises.maintain:null;if(exs){const ex=exs[parseInt(idx)];if(ex)name=ex.n}}}
+    if(name){ctx.fillStyle='#5A8C5E';ctx.beginPath();ctx.arc(36,y2+8,10,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold 10px sans-serif';ctx.fillText('✓',31,y2+12);ctx.fillStyle='#2D2A26';ctx.font='500 14px -apple-system,PingFang SC,sans-serif';ctx.fillText(name,54,y2+12);ctx.fillStyle='rgba(90,140,94,0.12)';const tagW2=50;roundRect(ctx,W-36-tagW2,y2,tagW2,20,10);ctx.fill();ctx.fillStyle='#5A8C5E';ctx.font='600 10px sans-serif';ctx.textAlign='center';ctx.fillText('已完成',W-36-tagW2/2,y2+13);ctx.textAlign='left';y2+=32}
+  });
+  y2+=8;ctx.strokeStyle='#EDE8E3';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(28,y2);ctx.lineTo(W-28,y2);ctx.stroke();
+  y2+=20;ctx.fillStyle='#B5AFA8';ctx.font='11px sans-serif';ctx.textAlign='center';ctx.fillText('HerCycle · 基于女性周期的个性化饮食·健身·日程管理助手',W/2,y2);ctx.textAlign='left';
+  canvas.toBlob(function(blob){
+    if(blob&&navigator.share&&navigator.canShare&&navigator.canShare({files:[new File([blob],'hercycle-checkin.png',{type:'image/png'})]})){
+      const file=new File([blob],'hercycle-checkin.png',{type:'image/png'});
+      navigator.share({title:'HerCycle 今日打卡',text:shareText,files:[file]}).then(()=>showToast('✅ 已分享')).catch(()=>{downloadBlob(blob,'HerCycle-打卡.png');showToast('📤 已保存图片，请手动分享');});
+    }else if(blob){
+      downloadBlob(blob,'HerCycle-打卡.png');
+      navigator.clipboard.writeText(shareText).then(()=>showToast('📤 图片已保存，分享文案已复制')).catch(()=>showToast('📤 图片已保存，请手动分享'));
+    }else{
+      navigator.clipboard.writeText(shareText).then(()=>showToast('📤 分享文案已复制')).catch(()=>showToast('📤 请保存图片后手动分享'));
+    }
+  },'image/png');
+}
+
+function downloadBlob(blob,name){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=name;a.click();
+  URL.revokeObjectURL(url);
+}
+
+function roundRect(c,x,y,w,h,r){
+  c.beginPath();
+  c.moveTo(x+r,y);
+  c.lineTo(x+w-r,y);
+  c.quadraticCurveTo(x+w,y,x+w,y+r);
+  c.lineTo(x+w,y+h-r);
+  c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  c.lineTo(x+r,y+h);
+  c.quadraticCurveTo(x,y+h,x,y+h-r);
+  c.lineTo(x,y+r);
+  c.quadraticCurveTo(x,y,x+r,y);
+  c.closePath();
+}
+
+// ===== V6: 收藏和历史记录 =====
+let HC_FAVS=JSON.parse(localStorage.getItem('hercycle_favorites')||'[]');
+let HC_HISTORY=JSON.parse(localStorage.getItem('hercycle_history')||'[]');
+
+function saveFavs(){localStorage.setItem('hercycle_favorites',JSON.stringify(HC_FAVS))}
+function saveHistory(){localStorage.setItem('hercycle_history',JSON.stringify(HC_HISTORY))}
+
+function renderFavChips(){
+  const sec=document.getElementById('fav-section');
+  const wrap=document.getElementById('fav-chips');
+  if(!sec||!wrap)return;
+  if(!HC_FAVS.length){sec.style.display='none';return}
+  sec.style.display='block';
+  let h='';
+  HC_FAVS.forEach(f=>{const sel=CP.selectedBlogger===f.name?' selected':'';h+='<div class="fav-chip'+sel+'" onclick="selectFavBlogger(\''+f.name.replace(/'/g,"\\'")+'\')" data-fav="'+f.name.replace(/'/g,"\\'")+'"><span>'+f.icon+' '+f.name+'</span><span class="fav-remove" onclick="event.stopPropagation();removeFav(\''+f.name.replace(/'/g,"\\'")+'\')">×</span></div>';});
+  wrap.innerHTML=h;
+}
+
+function selectFavBlogger(name){
+  document.querySelectorAll('.blogger-chip').forEach(c=>c.classList.remove('selected'));
+  CP.selectedBlogger=name;
+  document.getElementById('blogger-custom').value='';
+  renderFavChips();
+  renderBloggerCards();
+}
+
+function removeFav(name){HC_FAVS=HC_FAVS.filter(f=>f.name!==name);saveFavs();renderFavChips();}
+function addFav(name){if(HC_FAVS.find(f=>f.name===name))return;const icon=BLOGGER_ICONS[name]||'🏃‍♀️';HC_FAVS.push({name,icon});saveFavs();renderFavChips();}
+function isFav(name){return HC_FAVS.some(f=>f.name===name)}
+
+function toggleFavFromVideo(){
+  const nameEl=document.getElementById('vi-blogger');
+  const inputEl=document.getElementById('vi-blogger-input');
+  const name=nameEl.textContent||inputEl.value;
+  if(!name.trim())return;
+  if(isFav(name)){removeFav(name);document.getElementById('vi-fav-btn').textContent='☆';document.getElementById('vi-fav-btn').classList.remove('active');}
+  else{addFav(name);document.getElementById('vi-fav-btn').textContent='★';document.getElementById('vi-fav-btn').classList.add('active');}
+}
+
+function addHistory(blogger,title,bvid){
+  HC_HISTORY.unshift({blogger,title,bvid,ts:Date.now()});
+  if(HC_HISTORY.length>20)HC_HISTORY=HC_HISTORY.slice(0,20);
+  saveHistory();renderHistory();
+}
+
+function renderHistory(){
+  const sec=document.getElementById('history-section');
+  if(!sec)return;
+  if(!HC_HISTORY.length){sec.style.display='none';return}
+  sec.style.display='block';
+  const list=document.getElementById('history-list');
+  const toggle=document.getElementById('history-toggle');
+  if(!list||!toggle)return;
+  let h='';
+  HC_HISTORY.forEach((item,i)=>{const d=new Date(item.ts);const ds=(d.getMonth()+1)+'/'+d.getDate();const favCls=isFav(item.blogger)?' active':'';const title=(item.title||'').length>20?(item.title||'').substring(0,20)+'...':(item.title||'');h+='<div class="history-item" onclick="replayHistory('+i+')"><div class="history-item-info"><div class="history-item-blogger">'+item.blogger+'</div><div class="history-item-title">'+title+'</div></div><div class="history-item-date">'+ds+'</div><span class="history-item-fav'+favCls+'" onclick="event.stopPropagation();toggleHistoryFav(\''+item.blogger.replace(/'/g,"\\'")+'\')">'+(isFav(item.blogger)?'★':'☆')+'</span></div>';});
+  list.innerHTML=h;
+  toggle.style.display=HC_HISTORY.length>3?'block':'none';
+  const items=list.querySelectorAll('.history-item');
+  items.forEach((el,i)=>{if(i>=3)el.style.display='none'});
+  if(!list.classList.contains('expanded')){list.style.maxHeight='none'}
+}
+
+function toggleHistory(){
+  const list=document.getElementById('history-list');
+  const toggle=document.getElementById('history-toggle');
+  if(!list||!toggle)return;
+  const expanded=list.classList.toggle('expanded');
+  const items=list.querySelectorAll('.history-item');
+  items.forEach((el,i)=>{el.style.display=(expanded||i<3)?'':'none'});
+  toggle.textContent=expanded?'收起':'展开全部';
+}
+
+function replayHistory(idx){
+  const item=HC_HISTORY[idx];
+  if(!item||!item.bvid)return;
+  document.getElementById('bv-input').value=item.bvid;
+  parseBV();
+}
+
+function toggleHistoryFav(name){if(isFav(name))removeFav(name);else addFav(name);renderHistory();}
+
+// ===== V6: 博主相关函数 =====
+document.querySelectorAll('.blogger-chip').forEach(chip=>{chip.addEventListener('click',()=>{document.querySelectorAll('.blogger-chip').forEach(c=>c.classList.remove('selected'));chip.classList.add('selected');CP.selectedBlogger=chip.dataset.blogger;document.getElementById('blogger-custom').value='';renderBloggerCards();});});
+
+function searchBlogger(){
+  const custom=document.getElementById('blogger-custom').value.trim();
+  if(!custom)return;
+  document.querySelectorAll('.blogger-chip').forEach(c=>c.classList.remove('selected'));
+  CP.selectedBlogger=custom;
+  renderBloggerCards();
+}
+
+function renderBloggerCards(){
+  const ph=CP.phase, blogger=CP.selectedBlogger;
+  if(!blogger)return;
+  const kwObj=BLOGGER_PHASE_KEYWORDS[ph]||{};
+  const keyword=kwObj[CP.goal]||kwObj.maintain||'';
+  const desc=BLOGGER_PHASE_DESCS[ph];
+  const searchUrl='https://search.bilibili.com/all?keyword='+encodeURIComponent(blogger+' + '+keyword);
+  const icon=BLOGGER_ICONS[blogger]||'🏃‍♀️';
+  document.getElementById('blogger-cards').innerHTML='<div class="blogger-card"><div class="blogger-card-avatar">'+icon+'</div><div class="blogger-card-name">'+blogger+'</div><div class="blogger-card-desc">'+(desc?desc.name+'·'+desc.desc:'')+'</div><button class="blogger-card-btn" onclick="window.open(\''+searchUrl+'\',\'_blank\')">去B站跟练</button></div>';
+}
+
+function parseBV(){
+  const input=document.getElementById('bv-input').value.trim();
+  if(!input){showToast('请粘贴视频链接');return}
+  let embedUrl='',platform='unknown',videoId='',canEmbed=false;
+  const bvMatch=input.match(/BV[a-zA-Z0-9]{10}/);
+  if(bvMatch||input.includes('bilibili.com')){
+    videoId=bvMatch?bvMatch[0]:'';
+    if(!videoId&&input.includes('bilibili.com/video/')){const parts=input.split('/');for(const p of parts){if(p.startsWith('BV')){videoId=p;break}}}
+    if(!videoId){showToast('无法识别B站视频ID');return}
+    embedUrl='https://player.bilibili.com/player.html?bvid='+videoId+'&autoplay=0&high_quality=1';
+    platform='bilibili';canEmbed=true;
+  }else if(input.includes('youtube.com')||input.includes('youtu.be')){
+    let ytId='';
+    const ytMatch=input.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    if(ytMatch)ytId=ytMatch[1];
+    if(!ytId){showToast('无法识别YouTube视频ID');return}
+    embedUrl='https://www.youtube.com/embed/'+ytId;
+    platform='youtube';videoId=ytId;canEmbed=true;
+  }else if(input.includes('xiaohongshu.com')||input.includes('xhslink.com')){
+    platform='xiaohongshu';videoId=input;canEmbed=false;
+  }else if(input.includes('douyin.com')||input.includes('iesdouyin.com')){
+    platform='douyin';videoId=input;canEmbed=false;
+  }else if(input.startsWith('http')){
+    platform='other';videoId=input;canEmbed=false;
+  }else{showToast('请粘贴有效的视频链接（B站/YouTube/小红书/抖音等）');return}
+  const pNames={bilibili:'B站',youtube:'YouTube',xiaohongshu:'小红书',douyin:'抖音',other:'视频平台'};
+  const pIcons={bilibili:'📺',youtube:'▶️',xiaohongshu:'📕',douyin:'🎵',other:'🔗'};
+  if(canEmbed){
+    document.getElementById('video-iframe-wrap').innerHTML='<iframe src="'+embedUrl+'" allowfullscreen></iframe>';
+  }else{
+    document.getElementById('video-iframe-wrap').innerHTML='<div style="background:#FFF5F5;border-radius:12px;padding:16px;text-align:center"><div style="font-size:28px;margin-bottom:8px">'+(pIcons[platform]||'🔗')+'</div><div style="font-size:14px;color:var(--text);font-weight:600;margin-bottom:4px">'+(pNames[platform]||'视频')+'链接已识别</div><div style="font-size:12px;color:var(--sub);margin-bottom:12px;word-break:break-all">'+input+'</div><a href="'+input+'" target="_blank" style="display:inline-block;padding:8px 20px;background:var(--accent2);color:#fff;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none">前往'+(pNames[platform]||'平台')+'观看</a></div>';
+  }
+  showToast('✅ '+(pNames[platform]||'')+'链接已解析');
+  document.getElementById('video-info').classList.remove('hidden');
+  document.getElementById('vi-fav-btn').textContent='☆';
+  document.getElementById('vi-fav-btn').classList.remove('active');
+  if(canEmbed&&platform==='bilibili'){
+    document.getElementById('vi-title').textContent='正在识别视频信息...';
+    document.getElementById('vi-blogger').textContent='';
+    document.getElementById('vi-blogger').classList.remove('hidden');
+    document.getElementById('vi-blogger-input').classList.add('hidden');
+    const apiUrl='https://api.bilibili.com/x/web-interface/view?bvid='+videoId;
+    const proxies=[url=>'https://api.allorigins.win/raw?url='+encodeURIComponent(url),url=>'https://corsproxy.io/?'+encodeURIComponent(url),url=>'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(url)];
+    let tried=0;
+    function tryProxy(){if(tried>=proxies.length){fallbackMI();return}const proxyUrl=proxies[tried](apiUrl);tried++;fetch(proxyUrl,{signal:AbortSignal.timeout(5000)}).then(r=>r.text()).then(txt=>{let data;try{data=JSON.parse(txt)}catch(e){tryProxy();return}if(data&&data.data){const title=data.data.title||'未知标题';const blogger=data.data.owner?data.data.owner.name:'';document.getElementById('vi-title').textContent=title;if(blogger){document.getElementById('vi-blogger').textContent=blogger;document.getElementById('vi-blogger').classList.remove('hidden');document.getElementById('vi-blogger-input').classList.add('hidden');if(isFav(blogger)){document.getElementById('vi-fav-btn').textContent='★';document.getElementById('vi-fav-btn').classList.add('active')}addHistory(blogger,title,videoId);}else{document.getElementById('vi-blogger').classList.add('hidden');document.getElementById('vi-blogger-input').classList.remove('hidden');addHistory('未知博主',title,videoId);}}else{tryProxy();}}).catch(()=>{tryProxy();});}
+    tryProxy();
+    function fallbackMI(){document.getElementById('vi-title').textContent='视频已嵌入（请手动输入博主）';document.getElementById('vi-blogger').classList.add('hidden');document.getElementById('vi-blogger-input').classList.remove('hidden');document.getElementById('vi-blogger-input').value='';setupMI();}
+  }else if(canEmbed&&platform==='youtube'){
+    document.getElementById('vi-title').textContent='YouTube视频已嵌入';
+    document.getElementById('vi-blogger').classList.add('hidden');
+    document.getElementById('vi-blogger-input').classList.remove('hidden');
+    document.getElementById('vi-blogger-input').value='';
+    setupMI();
+  }else{
+    document.getElementById('vi-title').innerHTML='<span style="color:var(--sub)">视频标题：</span><input type="text" id="vi-title-input" style="border:1px solid #E0DAD4;border-radius:6px;padding:4px 8px;font-size:12px;width:100%;margin-top:4px" placeholder="输入视频标题">';
+    document.getElementById('vi-blogger').classList.add('hidden');
+    document.getElementById('vi-blogger-input').classList.remove('hidden');
+    document.getElementById('vi-blogger-input').value='';
+    setupMI();
+  }
+  function setupMI(){
+    const inputEl=document.getElementById('vi-blogger-input');
+    inputEl.onblur=function(){
+      const name=inputEl.value.trim();
+      const titleInput=document.getElementById('vi-title-input');
+      const title=titleInput?titleInput.value.trim():(document.getElementById('vi-title').textContent||'手动输入');
+      if(name){
+        document.getElementById('vi-blogger').textContent=name;
+        document.getElementById('vi-blogger').classList.remove('hidden');
+        inputEl.classList.add('hidden');
+        if(isFav(name)){document.getElementById('vi-fav-btn').textContent='★';document.getElementById('vi-fav-btn').classList.add('active')}
+        addHistory(name,title,videoId);
+        if(titleInput)document.getElementById('vi-title').textContent=title;
+      }
+    };
+  }
+}
+
+function openDemoModal(exerciseName,steps){
+  document.getElementById('demo-modal-title').textContent='▶ '+exerciseName;
+  let stepsHtml='';steps.forEach((step,i)=>{stepsHtml+='<div class="demo-step"><div class="demo-step-num">'+(i+1)+'</div><div class="demo-step-text">'+step+'</div></div>';});
+  document.getElementById('demo-modal-steps').innerHTML=stepsHtml;
+  document.getElementById('demo-bilibili-btn').onclick=()=>window.open('https://search.bilibili.com/all?keyword='+encodeURIComponent(exerciseName+' 教学'),'_blank');
+  document.getElementById('demo-modal').classList.add('show');
+}
+
+function closeDemoModal(){document.getElementById('demo-modal').classList.remove('show');}
+document.getElementById('demo-modal').addEventListener('click',function(e){if(e.target===this)closeDemoModal();});
+
+// ===== V6: 训练进度 =====
+function updateWorkoutProgress(){
+  const ph=PH[CP.phase];
+  if(!ph)return;
+  const exs=ph.exercises[CP.goal]||ph.exercises.maintain;
+  const requiredCount=exs.length;
+  const optionalChecked=CP.completedExercises.filter(k=>{const idx=parseInt(k.split('-').pop());return idx<0}).length;
+  const requiredCompleted=CP.completedExercises.filter(k=>{const idx=parseInt(k.split('-').pop());return idx>=0}).length;
+  const total=requiredCount+optionalChecked;
+  const completed=requiredCompleted+optionalChecked;
+  const pct=total>0?Math.round(completed/total*100):0;
+  document.getElementById('workout-progress-count').textContent=completed+'/'+total+' 已完成';
+  document.getElementById('workout-progress-fill').style.width=pct+'%';
+  const encEl=document.getElementById('encouragement');
+  let msg='';
+  if(pct>=100){msg='🎉 太棒了！今日训练全部完成！';document.getElementById('checkin-trigger').classList.remove('hidden');}
+  else if(requiredCompleted>=requiredCount){msg='✅ 必做已全部完成！选做可继续挑战';document.getElementById('checkin-trigger').classList.remove('hidden');}
+  else if(pct>=75)msg='🔥 就快完成了，冲刺！';
+  else if(pct>=50)msg='💪 已经过半了，继续加油！';
+  else if(pct>=25)msg='🌟 好的开始是成功的一半！';
+  if(msg){encEl.textContent=msg;encEl.classList.add('show');}
+  else{encEl.classList.remove('show');}
+}
+
+function toggleExercise(idx){
+  const key=CP.phase+'-'+idx;
+  const btn=document.querySelector('.exercise-checkbox[data-idx="'+idx+'"]');
+  if(!btn)return;
+  if(CP.completedExercises.includes(key)){CP.completedExercises=CP.completedExercises.filter(k=>k!==key);btn.classList.remove('checked');}
+  else{CP.completedExercises.push(key);btn.classList.add('checked');}
+  updateWorkoutProgress();
+  saveExProgress();
+}
+
+function renderWorkoutContent(){
+  const ph=PH[CP.phase];
+  if(!ph)return;
+  const wt=ph.wt[CP.goal]||ph.wt.maintain||'';
+  const it=ph.it[CP.goal]||ph.it.maintain||'';
+  const exs=ph.exercises[CP.goal]||ph.exercises.maintain;
+  const duration=CP.goal==='gain'?50:CP.goal==='lose'?40:CP.goal==='shape'?45:30;
+  let wH='<div style="font-size:13px;color:var(--sub);margin-bottom:10px">🏋️ '+wt+' · 强度：'+it+' · 约'+duration+'分钟</div>';
+  exs.forEach((e,i)=>{const key=CP.phase+'-'+i;const isChecked=CP.completedExercises.includes(key);wH+='<div class="workout-item"><div class="exercise-checkbox'+(isChecked?' checked':'')+'" data-idx="'+i+'" onclick="toggleExercise('+i+')"></div><div class="workout-item-right"><div class="workout-name">'+e.n+'</div><div class="workout-meta">'+e.d+'</div><div class="workout-sets"><span class="set-tag">'+e.s+'</span></div><div class="workout-item-actions"><button class="demo-btn" onclick="openDemoModal(\''+e.n+'\','+JSON.stringify(e.steps).replace(/"/g,'&quot;')+')">▶ 演示</button></div></div></div>';});
+  if(CP.goal==='lose')wH+='<div class="workout-item"><div class="exercise-checkbox" data-idx="-1" onclick="toggleExercise(-1)"></div><div class="workout-item-right"><div class="workout-name">🔥 空腹有氧（选做）</div><div class="workout-meta">晨起快走20分钟</div><div class="workout-item-actions"><button class="demo-btn" onclick="openDemoModal(\'空腹有氧\',[\'起床后喝一杯温水\',\'选择平坦路线，快走步频100-120步/分钟\',\'保持能说话的配速，微微出汗\',\'快走20分钟后拉伸5分钟\'])">▶ 演示</button></div></div></div>';
+  if(CP.goal==='shape')wH+='<div class="workout-item"><div class="exercise-checkbox" data-idx="-2" onclick="toggleExercise(-2)"></div><div class="workout-item-right"><div class="workout-name">🎯 弹力带臀腿（选做）</div><div class="workout-meta">侧抬腿15×3+蚌式开合15×3</div><div class="workout-item-actions"><button class="demo-btn" onclick="openDemoModal(\'弹力带臀腿\',[\'侧抬腿：侧卧，弹力带套于大腿上方，缓慢抬起到最高点\',\'顶部停顿2秒，缓慢放下（15次×3组）\',\'蚌式开合：侧卧屈膝，弹力带套于大腿上方\',\'膝盖打开至最高点停顿2秒，缓慢合拢（15次×3组）\'])">▶ 演示</button></div></div></div>';
+  document.getElementById('workout-content').innerHTML=wH;
+}
+
+// ===== V6: 采购清单 =====
+let shopMode='home';
+
+function switchShopMode(mode){
+  shopMode=mode;
+  document.getElementById('shop-home-btn').style.background=mode==='home'?'var(--accent2)':'#EDE8E3';
+  document.getElementById('shop-home-btn').style.color=mode==='home'?'#fff':'var(--text)';
+  document.getElementById('shop-takeout-btn').style.background=mode==='takeout'?'var(--accent2)':'#EDE8E3';
+  document.getElementById('shop-takeout-btn').style.color=mode==='takeout'?'#fff':'var(--text)';
+  document.getElementById('shop-home-content').style.display=mode==='home'?'block':'none';
+  document.getElementById('shop-takeout-content').style.display=mode==='takeout'?'block':'none';
+}
+
+function renderShopping(){
+  if(!CP.meals||!CP.meals.breakfast){document.getElementById('shopping-section').style.display='none';return}
+  document.getElementById('shopping-section').style.display='block';
+  const ingredients=new Set();
+  ['breakfast','lunch','dinner','snack'].forEach(mk=>{if(CP.meals[mk]&&CP.meals[mk].items){CP.meals[mk].items.split(/[\+\，,]/).forEach(item=>{const trimmed=item.trim();if(trimmed&&trimmed.length>1&&!trimmed.match(/^[0-9]+/)){const main=trimmed.replace(/^[0-9]+[克个颗把片块杯小半]+/,'').trim();if(main)ingredients.add(main)}});}});
+  let homeHtml='';Array.from(ingredients).sort().forEach(ing=>{homeHtml+='<div class="shopping-item"><input type="checkbox" id="shop-'+ing.replace(/\s/g,'_')+'" onchange="this.parentElement.classList.toggle(\'checked\');saveShopCheck()"><span>'+ing+'</span></div>';});
+  homeHtml+='<button class="shopping-copy-btn" onclick="copyShoppingList()">📋 复制采购清单</button>';
+  document.getElementById('shop-home-content').innerHTML=homeHtml;
+  restoreShopCheck();
+  const phaseTakeout={
+    menstrual:{title:'生理期暖身餐',desc:'温热易消化，补铁暖宫',keywords:'小米粥/猪肝汤/红糖水/豆腐菜汤/紫菜蛋花汤/清蒸鱼/白粥+红糖/姜汁撞奶'},
+    follicular:{title:'卵泡期能量餐',desc:'高蛋白增肌黄金期',keywords:'鸡胸肉沙拉/牛排饭/鳕鱼套餐/蔬菜牛肉卷/虾仁牛油果沙拉/黑椒牛柳意面/三文鱼波奇饭'},
+    ovulation:{title:'排卵期冲刺餐',desc:'高蛋白高能量极限',keywords:'烤鸡胸/香煎鳕鱼/牛肉藜麦碗/虾仁西芹/三文鱼配菜/低脂披萨/鸡胸肉丸意面'},
+    luteal:{title:'黄体期温和餐',desc:'补镁抗压缓解水肿',keywords:'南瓜汤/紫薯甜品/烤红薯/黑巧甜品/核桃蛋糕/温牛奶配燕麦/芝麻糊'},
+    pcos:{title:'PCOS规律餐',desc:'稳血糖、低GI抗炎',keywords:'燕麦粥/荞麦面/清蒸鱼/蔬菜沙拉/豆腐汤/黑咖啡/酸奶杯/杂粮饭'}
+  };
+  const tData=phaseTakeout[CP.phase]||phaseTakeout.menstrual;
+  const takeoutKeywords=tData.keywords.split(' ').filter(k=>k);
+  let takeoutHtml='<div class="takeout-card"><div class="takeout-card-title">'+tData.title+'</div><div class="takeout-card-desc">'+tData.desc+'</div></div>';
+  takeoutKeywords.slice(0,8).forEach(kw=>{
+    
+    
+    takeoutHtml+='<div class="takeout-card-search">🔍 外卖搜索「'+kw+'」</div>';
+  });
+  takeoutHtml+='</div>';
+  document.getElementById('shop-takeout-content').innerHTML=takeoutHtml;
+}
+
+// 采购清单勾选缓存
+function saveShopCheck(){
+  try{
+    const checks={};
+    document.querySelectorAll('#shop-home-content .shopping-item input[type=checkbox]').forEach(cb=>{
+      checks[cb.id]=cb.checked;
+    });
+    localStorage.setItem('hercycle_shop_check_'+CP.phase,JSON.stringify(checks));
+  }catch(e){}
+}
+function restoreShopCheck(){
+  try{
+    const saved=localStorage.getItem('hercycle_shop_check_'+CP.phase);
+    if(!saved)return;
+    const checks=JSON.parse(saved);
+    document.querySelectorAll('#shop-home-content .shopping-item input[type=checkbox]').forEach(cb=>{
+      if(checks[cb.id]){
+        cb.checked=true;
+        cb.parentElement.classList.add('checked');
+      }
+    });
+  }catch(e){}
+}
+
+function copyShoppingList(){
+  const items=Array.from(document.querySelectorAll('#shop-home-content .shopping-item')).map(el=>el.querySelector('span').textContent);
+  const today=new Date();
+  const dateStr=today.getFullYear()+'/'+(today.getMonth()+1)+'/'+today.getDate();
+  const line='━━━━━━━━━━━━━━━━━━';
+  const phaseName=PHASE_SHARE_NAMES[CP.phase]||CP.phaseName;
+  const text='🛒 HerCycle 采购备忘录\n'+line+'\n📅 '+dateStr+'\n🌱 周期阶段：'+phaseName+'\n'+line+'\n\n📋 采购清单：\n'+items.map(item=>'- '+item).join('\n')+'\n\n'+line+'\nHerCycle · 基于女性周期的个性化饮食·健身·日程管理助手';
+  navigator.clipboard.writeText(text).then(()=>showToast('✅ 采购清单已复制')).catch(()=>showToast('复制失败，请手动复制'));
+}
+
+// ===== V6: 主逻辑 =====
+function generatePlan(){
+  clearErrors();
+  const h=parseFloat(document.getElementById('height').value),w=parseFloat(document.getElementById('weight').value),a=parseInt(document.getElementById('age').value),clVal=document.getElementById('cycle-length').value,cl=clVal===''?NaN:parseInt(clVal),lp=document.getElementById('last-period').value,pl=parseInt(document.getElementById('period-length').value),goal=document.getElementById('goal').value;
+  let err=false;
+  if(!h){document.getElementById('fg-height').classList.add('error');err=true}
+  if(!w){document.getElementById('fg-weight').classList.add('error');err=true}
+  if(!a){document.getElementById('fg-age').classList.add('error');err=true}
+  if(clVal===''){document.getElementById('fg-cycle').classList.add('error');err=true}
+  if(!lp){document.getElementById('fg-lastperiod').classList.add('error');err=true}
+  if(!goal){document.getElementById('fg-goal').classList.add('error');err=true}
+  if(err)return;
+  // Save to localStorage
+  try{localStorage.setItem('hercycle_form',JSON.stringify({h,w,a,cycle:clVal,lp,pl,goal,t:Date.now()}));}catch(e){}
+  const last=new Date(lp),today=new Date(),dd=Math.floor((today-last)/86400000),cd=cl>0?((dd%cl)+cl)%cl+1:0;
+  let ph;
+  if(cl===0){ph='pcos'}
+  else if(cd<=pl)ph='menstrual';
+  else if(cd<=Math.floor(cl*0.46))ph='follicular';
+  else if(cd<=Math.floor(cl*0.54))ph='ovulation';
+  else ph='luteal';
   const bmi=w/((h/100)**2);
-  let bmiCat,bmiColor;
-  if(bmi<18.5){bmiCat='偏瘦';bmiColor='var(--accent3)'}
-  else if(bmi<24){bmiCat='正常';bmiColor='var(--accent2)'}
-  else if(bmi<28){bmiCat='偏胖';bmiColor='var(--accent)'}
-  else{bmiCat='肥胖';bmiColor='var(--phase-menstrual)'}
+  let bC,bCo;
+  if(bmi<18.5){bC='偏瘦';bCo='var(--accent3)'}
+  else if(bmi<24){bC='正常';bCo='var(--accent2)'}
+  else if(bmi<28){bC='偏胖';bCo='var(--accent)'}
+  else{bC='肥胖';bCo='var(--phase-menstrual)'}
   const bmr=Math.round(10*w+6.25*h-5*a-161);
-  let tMul;if(goal==='lose')tMul=0.82;else if(goal==='gain')tMul=1.15;else tMul=1.0;
-  const baseTdee=Math.round(bmr*1.4);
-  const tdee=Math.round(baseTdee*PHASES[phase].kcalMod*tMul);
-  const protein=Math.round(w*PHASES[phase].proteinMod*(goal==='gain'?1.3:goal==='lose'?1.1:1.0));
-  const p=PHASES[phase];
-  document.getElementById('phase-banner').style.background=p.color;
-  document.getElementById('phase-day-num').textContent='Day '+cycleDay;
+  let tm;
+  if(goal==='lose')tm=0.82;
+  else if(goal==='gain')tm=1.15;
+  else if(goal==='shape')tm=1.0;
+  else tm=1.0;
+  const tdee=Math.round(bmr*1.4*PH[ph].km*tm),protein=Math.round(w*PH[ph].pm*(goal==='gain'?1.3:goal==='lose'?1.1:goal==='shape'?1.2:1.0));
+  const p=PH[ph];
+  document.getElementById('phase-banner').style.background=p.ch;
+  document.getElementById('phase-day-num').textContent=ph==='pcos'?'PCOS':('Day '+cd);
   document.getElementById('phase-label').textContent=p.name;
   document.getElementById('phase-desc').textContent=p.desc;
-  const bar=document.getElementById('phase-bar');bar.innerHTML='';
-  ['menstrual','follicular','ovulation','luteal'].forEach(ph=>{const sp=document.createElement('span');sp.style.background=PHASES[ph].color;if(ph===phase)sp.className='active';bar.appendChild(sp)});
+  const bar=document.getElementById('phase-bar');
+  bar.innerHTML='';
+  const phases=ph==='pcos'?['pcos']:['menstrual','follicular','ovulation','luteal'];
+  phases.forEach(x=>{const sp=document.createElement('span');sp.style.background=PH[x].ch;if(x===ph)sp.className='active';bar.appendChild(sp);});
   document.getElementById('bmi-value').textContent=bmi.toFixed(1);
-  const catEl=document.getElementById('bmi-category');catEl.textContent=bmiCat;catEl.style.background=bmiColor;
+  const catEl=document.getElementById('bmi-category');catEl.textContent=bC;catEl.style.background=bCo;
   document.getElementById('bmr-val').textContent=bmr+' kcal';document.getElementById('bmr-bar').style.width=Math.min(bmr/2000*100,100)+'%';
   document.getElementById('tdee-val').textContent=tdee+' kcal';document.getElementById('tdee-bar').style.width=Math.min(tdee/2500*100,100)+'%';
   document.getElementById('protein-val').textContent=protein+'g';document.getElementById('protein-bar').style.width=Math.min(protein/120*100,100)+'%';
-  const meals=MEALS[phase];
-  const goalLabel=goal==='lose'?'减脂':goal==='gain'?'增肌':'维持';
-  let dH='<div style="font-size:13px;color:var(--sub);margin-bottom:10px">🎯 本期重点：'+p.dietFocus+' · '+goalLabel+'模式 · 约'+tdee+'kcal/日</div>';
-  const mNames={breakfast:'🌅 早餐',lunch:'☀️ 午餐',dinner:'🌙 晚餐',snack:'🍪 加餐'};
-  Object.keys(mNames).forEach(k=>{const m=meals[k];dH+='<div class="meal"><div class="meal-header"><span class="meal-time">'+mNames[k]+'</span><span class="meal-kcal">'+m.kcal+'kcal</span></div><div class="meal-items">'+m.items+'</div><div class="meal-tip">'+m.tip+'</div></div>'});
-  dH+='<div style="margin-top:12px"><div style="font-size:13px;font-weight:700;margin-bottom:6px">✅ 推荐食物</div><div style="font-size:13px;color:var(--accent2)">'+p.foods.join(' · ')+'</div></div>';
-  dH+='<div style="margin-top:8px"><div style="font-size:13px;font-weight:700;margin-bottom:6px">⚠️ 少吃避免</div><div style="font-size:13px;color:var(--phase-menstrual)">'+p.avoid.join(' · ')+'</div></div>';
+  const meals=ML[ph][goal]||ML[ph].maintain;
+  const gMap={lose:'减脂',gain:'增肌',shape:'塑形',maintain:'维持'};const gL=gMap[goal]||'维持';
+  let dH='<div style="font-size:13px;color:var(--sub);margin-bottom:10px">🎯 本期重点：'+p.df+' · '+gL+'模式 · 约'+tdee+'kcal/日</div>';
+  const mN={breakfast:'🌅 早餐',lunch:'☀️ 午餐',dinner:'🌙 晚餐',snack:'🍪 加餐'};
+  Object.keys(mN).forEach(k=>{const m=meals[k];if(m){dH+='<div class="meal"><div class="meal-header"><span class="meal-time">'+mN[k]+'</span><span class="meal-kcal">'+m.kcal+'kcal</span></div><div class="meal-items">'+m.items+'</div><div class="meal-tip">'+m.tip+'</div></div>'}});
+  dH+='<div style="margin-top:12px"><div style="font-size:13px;font-weight:700;margin-bottom:6px">✅ 推荐</div><div style="font-size:13px;color:var(--accent2)">'+p.f.join(' · ')+'</div></div>';
+  dH+='<div style="margin-top:8px"><div style="font-size:13px;font-weight:700;margin-bottom:6px">⚠️ 少吃</div><div style="font-size:13px;color:var(--phase-menstrual)">'+p.a.join(' · ')+'</div></div>';
   document.getElementById('diet-content').innerHTML=dH;
-  document.getElementById('diet-tip').innerHTML=p.dietTip;
-  let wH='<div style="font-size:13px;color:var(--sub);margin-bottom:10px">🏋️ '+p.workoutType+' · 强度：'+p.intensity+' · 约'+Math.round(goal==='gain'?50:goal==='lose'?40:30)+'分钟</div>';
-  p.exercises.forEach(ex=>{wH+='<div class="workout-item"><div class="workout-name">'+ex.name+'</div><div class="workout-meta">'+ex.desc+'</div><div class="workout-sets"><span class="set-tag">'+ex.sets+'</span></div></div>'});
-  if(goal==='lose'){wH+='<div class="workout-item"><div class="workout-name">🔥 额外：空腹有氧（选做）</div><div class="workout-meta">晨起快走20分钟，加速脂肪代谢</div></div>'}
-  document.getElementById('workout-content').innerHTML=wH;
-  document.getElementById('workout-tip').innerHTML='💡 本期运动建议：'+p.desc+' | 强度'+p.intensity+'，不要勉强，身体信号优先。'+(goal==='lose'?'减脂期保持热量缺口即可，不过度节食。':goal==='gain'?'增肌期训练后必须补充蛋白质，休息日也要吃够。':'');
-  let sH='';const sched=getSchedule(phase,goal,tdee,cycleDay,periodLen);
-  sched.forEach(s=>{sH+='<div class="schedule-item"><div class="schedule-time">'+s.time+'</div><div class="schedule-content"><div class="schedule-title">'+s.title+'</div><div class="schedule-desc">'+s.desc+'</div></div></div>'});
-  document.getElementById('schedule-content').innerHTML=sH;
+  document.getElementById('diet-tip').innerHTML=p.tip;
+  CP={phase:ph,phaseName:p.name,goalLabel:gL,goal,tdee,scheduleItems:[],meals:JSON.parse(JSON.stringify(meals)),colorHex:p.chx,completedExercises:[],selectedBlogger:''};
+  if(CP.meals.snack){
+    const si=CP.meals.snack.items.split(/[\+\，,]/).map(s=>s.trim()).filter(s=>s);
+    const half=Math.ceil(si.length/2);
+    CP.meals.snack1={items:si.slice(0,half).join(' + '),kcal:Math.round(CP.meals.snack.kcal/2),tip:CP.meals.snack.tip};
+    CP.meals.snack2={items:si.slice(half).join(' + '),kcal:Math.round(CP.meals.snack.kcal/2),tip:''};
+  }
+  renderWorkoutContent();
+  updateWorkoutProgress();
+  renderShopping();
+  switchShopMode('home');
+  document.getElementById('checkin-trigger').classList.add('hidden');
+  document.getElementById('blogger-cards').innerHTML='';
+  document.getElementById('bv-input').value='';
+  document.getElementById('video-iframe-wrap').innerHTML='';
+  document.getElementById('video-info').classList.add('hidden');
+  document.getElementById('video-section').style.display='none';
+  document.querySelectorAll('.blogger-chip').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('blogger-custom').value='';
+  document.querySelectorAll('.demo-bilibili-btn')[0]&&(document.querySelectorAll('.demo-bilibili-btn')[0].style.display='block');
+  renderFavChips();
+  renderHistory();
+  buildSchedule();
   document.getElementById('page-input').classList.add('hidden');
   document.getElementById('page-result').classList.remove('hidden');
+  document.querySelector('.tabs').style.display='flex';
+  setTimeout(fixLayout,0);
+  initTabObserver();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-function getSchedule(phase,goal,tdee,cd,pl){
-  const items=[];
-  if(phase==='menstrual'){
-    items.push({time:'07:00',title:'起床 · 温水+红糖姜茶',desc:'暖宫驱寒，唤醒代谢'});
-    items.push({time:'07:30',title:'舒缓拉伸 10分钟',desc:'猫牛式+婴儿式，缓解腰腹不适'});
-    items.push({time:'08:00',title:'早餐 · 补铁温热',desc:'约'+Math.round(tdee*0.3)+'kcal'});
-    items.push({time:'10:30',title:'加餐 · 黑巧+核桃',desc:'补镁抗炎，稳定情绪'});
-    items.push({time:'12:00',title:'午餐 · 补铁为主',desc:'约'+Math.round(tdee*0.35)+'kcal'});
-    items.push({time:'14:00',title:'散步 20分钟',desc:'户外慢走，促进循环，不勉强'});
-    items.push({time:'15:30',title:'加餐 · 红枣+温牛奶',desc:'补铁补钙'});
-    items.push({time:'18:30',title:'晚餐 · 温补好消化',desc:'约'+Math.round(tdee*0.3)+'kcal'});
-    items.push({time:'21:00',title:'热水泡脚 15分钟',desc:'促进血液循环，助眠'});
-  }else if(phase==='follicular'){
-    items.push({time:'07:00',title:'起床 · 温水',desc:'唤醒代谢'});
-    items.push({time:'07:15',title:'晨练 · 力量训练',desc:'深蹲+俯卧撑+臀桥+平板，约35分钟'});
-    items.push({time:'08:00',title:'早餐 · 高蛋白',desc:'约'+Math.round(tdee*0.3)+'kcal，训练后30min内补充'});
-    items.push({time:'10:30',title:'加餐 · 坚果+水果',desc:'补充能量'});
-    items.push({time:'12:00',title:'午餐 · 蛋白+复合碳水',desc:'约'+Math.round(tdee*0.35)+'kcal'});
-    items.push({time:'15:30',title:'加餐 · 酸奶+豆浆',desc:'植物蛋白+益生菌'});
-    items.push({time:'18:30',title:'晚餐 · 优质蛋白',desc:'约'+Math.round(tdee*0.3)+'kcal'});
-    items.push({time:'20:00',title:'泡沫轴放松 10分钟',desc:'筋膜放松，加速恢复'});
-  }else if(phase==='ovulation'){
-    items.push({time:'06:45',title:'起床 · 温水+黑咖啡',desc:'咖啡因提升运动表现'});
-    items.push({time:'07:00',title:'晨练 · HIIT高强度',desc:'冲刺期，20分钟HIIT+力量，约45分钟'});
-    items.push({time:'08:00',title:'早餐 · 高能启动',desc:'约'+Math.round(tdee*0.3)+'kcal，健康脂肪+蛋白'});
-    items.push({time:'10:30',title:'加餐 · 希腊酸奶',desc:'蛋白+益生菌'});
-    items.push({time:'12:00',title:'午餐 · 高蛋白高纤维',desc:'约'+Math.round(tdee*0.35)+'kcal'});
-    items.push({time:'15:30',title:'加餐 · 水果+亚麻籽',desc:'抗氧化+Omega3'});
-    items.push({time:'18:30',title:'晚餐 · 低脂修复',desc:'约'+Math.round(tdee*0.3)+'kcal'});
-    items.push({time:'20:00',title:'拉伸 15分钟',desc:'全身拉伸，防止肌肉僵硬'});
+
+function buildSchedule(){
+  const ph=CP.phase,wM=toMin(document.getElementById('tc-wake').value||'07:00'),bfM=toMin(document.getElementById('tc-breakfast').value||'08:00'),luM=toMin(document.getElementById('tc-lunch').value||'12:00'),diM=toMin(document.getElementById('tc-dinner').value||'18:30'),slM=toMin(document.getElementById('tc-sleep').value||'22:30');
+  const midAM=Math.round((bfM+luM)/2),midPM=Math.round((luM+diM)/2);
+  let items=[];
+  if(ph==='pcos'){
+    items.push({time:toStr(wM),title:'起床 · 温水+肉桂',desc:'肉桂有助于稳定血糖'});
+    items.push({time:toStr(wM+20),title:'晨练 · 快走/椭圆机',desc:'30分钟'});
+    items.push({time:toStr(bfM),title:'早餐',mk:'breakfast'});
+    items.push({time:toStr(midAM),title:'上午加餐',mk:'snack1'});
+    items.push({time:toStr(luM),title:'午餐',mk:'lunch'});
+    items.push({time:toStr(luM+120),title:'自重力量训练',desc:'20分钟'});
+    items.push({time:toStr(midPM),title:'下午加餐',mk:'snack2'});
+    items.push({time:toStr(diM),title:'晚餐',mk:'dinner'});
+    items.push({time:toStr(slM-60),title:'瑜伽/拉伸',desc:'15分钟'});
+  }else if(ph==='menstrual'){
+    items.push({time:toStr(wM),title:'起床 · 温水+红糖姜茶',desc:'暖宫驱寒'});
+    items.push({time:toStr(wM+30),title:'舒缓拉伸',desc:'10分钟'});
+    items.push({time:toStr(bfM),title:'早餐',mk:'breakfast'});
+    items.push({time:toStr(midAM),title:'上午加餐',mk:'snack1'});
+    items.push({time:toStr(luM),title:'午餐',mk:'lunch'});
+    items.push({time:toStr(luM+120),title:'散步',desc:'20分钟'});
+    items.push({time:toStr(midPM),title:'下午加餐',mk:'snack2'});
+    items.push({time:toStr(diM),title:'晚餐',mk:'dinner'});
+    items.push({time:toStr(slM-90),title:'热水泡脚',desc:'15分钟'});
+  }else if(ph==='follicular'){
+    items.push({time:toStr(wM),title:'起床 · 温水',desc:'唤醒代谢'});
+    items.push({time:toStr(wM+15),title:'晨练 · 力量训练',desc:'35分钟'});
+    items.push({time:toStr(bfM),title:'早餐',mk:'breakfast'});
+    items.push({time:toStr(midAM),title:'上午加餐',mk:'snack1'});
+    items.push({time:toStr(luM),title:'午餐',mk:'lunch'});
+    items.push({time:toStr(midPM),title:'下午加餐',mk:'snack2'});
+    items.push({time:toStr(diM),title:'晚餐',mk:'dinner'});
+    items.push({time:toStr(diM+90),title:'泡沫轴放松',desc:'10分钟'});
+  }else if(ph==='ovulation'){
+    items.push({time:toStr(Math.max(wM-15,0)),title:'起床 · 温水+黑咖啡',desc:'咖啡因提升运动表现'});
+    items.push({time:toStr(wM),title:'晨练 · HIIT高强度',desc:'45分钟'});
+    items.push({time:toStr(bfM),title:'早餐',mk:'breakfast'});
+    items.push({time:toStr(midAM),title:'上午加餐',mk:'snack1'});
+    items.push({time:toStr(luM),title:'午餐',mk:'lunch'});
+    items.push({time:toStr(midPM),title:'下午加餐',mk:'snack2'});
+    items.push({time:toStr(diM),title:'晚餐',mk:'dinner'});
+    items.push({time:toStr(diM+90),title:'拉伸',desc:'15分钟'});
   }else{
-    items.push({time:'07:00',title:'起床 · 温水',desc:'温和开启'});
-    items.push({time:'07:20',title:'晨练 · 普拉提/快走',desc:'中等强度25-30分钟，不勉强'});
-    items.push({time:'08:00',title:'早餐 · 复合碳水',desc:'约'+Math.round(tdee*0.3)+'kcal，稳血糖'});
-    items.push({time:'10:30',title:'加餐 · 香蕉+南瓜籽',desc:'补镁抗压'});
-    items.push({time:'12:00',title:'午餐 · 低钠高碘',desc:'约'+Math.round(tdee*0.35)+'kcal，减水肿'});
-    items.push({time:'15:30',title:'加餐 · 黑巧+温牛奶',desc:'补镁助眠，满足甜食欲'});
-    items.push({time:'18:30',title:'晚餐 · 温热低钠',desc:'约'+Math.round(tdee*0.3)+'kcal'});
-    items.push({time:'21:00',title:'拉伸+泡脚 15分钟',desc:'放松身心，改善睡眠'});
+    items.push({time:toStr(wM),title:'起床 · 温水',desc:'温和开启'});
+    items.push({time:toStr(wM+20),title:'晨练 · 普拉提/快走',desc:'25分钟'});
+    items.push({time:toStr(bfM),title:'早餐',mk:'breakfast'});
+    items.push({time:toStr(midAM),title:'上午加餐',mk:'snack1'});
+    items.push({time:toStr(luM),title:'午餐',mk:'lunch'});
+    items.push({time:toStr(midPM),title:'下午加餐',mk:'snack2'});
+    items.push({time:toStr(diM),title:'晚餐',mk:'dinner'});
+    items.push({time:toStr(slM-90),title:'拉伸+泡脚',desc:'15分钟'});
   }
-  return items;
+  items.sort((a,b)=>toMin(a.time)-toMin(b.time));
+  CP.scheduleItems=items;
+  renderTimeline(items);
 }
-function switchTab(tab){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelector('.tab[data-tab="'+tab+'"]').classList.add('active');
-  ['diet','workout','schedule'].forEach(t=>{document.getElementById('tab-'+t).style.display=t===tab?'block':'none'});
+
+function refreshSchedule(){buildSchedule();showToast('✅ 日程已更新')}
+
+function renderTimeline(items){
+  let h='<div class="timeline">';
+  items.forEach(s=>{
+    let dc=CP.colorHex;
+    if(s.mk)dc='#C4736E';
+    else if(/晨练|力量|HIIT|普拉提|自重|散步|拉伸|泡脚/.test(s.title))dc='#5A8C5E';
+    else dc='#D4A574';
+    h+='<div class="tl-item"><div class="tl-dot" style="background:'+dc+'"></div><div class="tl-time">'+s.time+'</div><div class="tl-title">'+s.title+'</div>';
+    if(s.desc)h+='<div class="tl-desc">'+s.desc+'</div>';
+    if(s.mk&&CP.meals[s.mk]){const m=CP.meals[s.mk];h+='<div class="tl-meal-card"><div class="tl-meal-foods">'+m.items+'</div><div class="tl-meal-kcal">'+m.kcal+' kcal</div>';if(m.tip)h+='<div class="tl-meal-tip">'+m.tip+'</div>';h+='</div>'}
+    h+='</div>';
+  });
+  h+='</div>';
+  document.getElementById('schedule-content').innerHTML=h;
 }
+
+async function exportImage(){
+  const items=CP.scheduleItems,meals=CP.meals,c=document.createElement('canvas'),W=420,dpr=2;
+  c.width=W*dpr;const ctx=c.getContext('2d');
+  let totalH=140;items.forEach(s=>{totalH+=(s.mk&&meals[s.mk])?100:42});totalH+=80;
+  c.height=totalH*dpr;ctx.scale(dpr,dpr);
+  ctx.fillStyle='#FAF7F5';ctx.fillRect(0,0,W,totalH);
+  // Draw hero gradient background
+  const grad=ctx.createLinearGradient(16,16,W-16,70);
+  grad.addColorStop(0,CP.colorHex);
+  grad.addColorStop(1,CP.colorHex+'cc');
+  ctx.fillStyle=grad;
+  rr(ctx,16,16,W-32,58,10);
+  ctx.fill();
+  ctx.fillStyle='#fff';ctx.font='bold 16px -apple-system,PingFang SC,sans-serif';
+  ctx.fillText('HerCycle · '+CP.phaseName,28,38);
+  // Draw day number badge
+  const dayNum=document.getElementById('phase-day-num')?document.getElementById('phase-day-num').textContent:'';
+  if(dayNum){
+    ctx.font='bold 12px sans-serif';
+    ctx.fillText(dayNum,W-80,38);
+  }
+  ctx.fillStyle='rgba(255,255,255,0.85)';ctx.font='12px sans-serif';
+  ctx.fillText(CP.goalLabel+' · 约'+CP.tdee+'kcal/日',28,56);
+  ctx.strokeStyle='#EDE8E3';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(28,100);ctx.lineTo(W-28,100);ctx.stroke();
+  let y=118;const lx=50;
+  ctx.strokeStyle='#EDE8E3';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(lx,y);ctx.lineTo(lx,totalH-70);ctx.stroke();
+  items.forEach(s=>{
+    let dc=CP.colorHex;if(s.mk)dc='#C4736E';else if(/晨练|力量|HIIT|普拉提|自重|散步|拉伸|泡脚/.test(s.title))dc='#5A8C5E';else dc='#D4A574';
+    ctx.fillStyle=dc;ctx.beginPath();ctx.arc(lx,y+6,4,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=dc;ctx.font='bold 10px sans-serif';ctx.fillText(s.time,lx+14,y+4);
+    ctx.fillStyle='#2D2A26';ctx.font='bold 12px sans-serif';ctx.fillText(s.title,lx+56,y+4);
+    if(s.desc){ctx.fillStyle='#8C8578';ctx.font='10px sans-serif';ctx.fillText(s.desc,lx+56,y+16)}
+    let ih=s.desc?26:10;
+    if(s.mk&&meals[s.mk]){const m=meals[s.mk];const cy=y+ih+4;rr(ctx,lx+54,cy,W-lx-74,54,6);ctx.fillStyle='#F0EDEA';ctx.fill();
+      ctx.fillStyle='#2D2A26';ctx.font='bold 11px sans-serif';wt(ctx,m.items,lx+64,cy+14,W-lx-94,13);
+      ctx.fillStyle='#8C8578';ctx.font='9px sans-serif';ctx.fillText(m.kcal+' kcal'+(m.tip?' · '+m.tip:''),lx+64,cy+44);ih+=62}
+    y+=ih+10;
+  });
+  const qrS=56,qrX=W-24-qrS,qrY=totalH-68;
+  ctx.fillStyle='#fff';rr(ctx,qrX,qrY,qrS,qrS,4);ctx.fill();
+  ctx.fillStyle='#B5AFA8';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText('扫码使用',qrX+qrS/2,qrY+qrS+10);ctx.textAlign='left';
+  ctx.fillText('HerCycle · 仅供参考',24,totalH-28);
+  try{const qrC=generateQRCanvas('https://christina412.github.io/hercycle/',qrS*dpr);ctx.drawImage(qrC,qrX,qrY,qrS,qrS);}catch(e){}
+  c.toBlob(b=>{const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='HerCycle-日程.png';a.click();URL.revokeObjectURL(u);showToast('✅ 图片已保存')},'image/png');
+}
+
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y);c.closePath()}
+function wt(c,t,x,y,mw,lh){let l='',ly=y;for(let i=0;i<t.length;i++){const te=l+t[i];if(c.measureText(te).width>mw&&l){c.fillText(l,x,ly);l=t[i];ly+=lh}else l=te}c.fillText(l,x,ly)}
+
+function addToCalendar(){
+  const items=CP.scheduleItems,meals=CP.meals;
+  const now=new Date();
+  const dateStr=now.getFullYear().toString()+(now.getMonth()+1).toString().padStart(2,'0')+now.getDate().toString().padStart(2,'0');
+  downloadICS(dateStr,items,meals);
+  showToast('📅 日历文件已生成，请在日历应用中打开保存');
+}
+
+function downloadICS(dateStr,items,meals){
+  const CRLF='\r\n';
+  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//HerCycle//CN','CALSCALE:GREGORIAN','METHOD:PUBLISH'];
+  const base=Date.now();
+  items.forEach((s,i)=>{
+    const[h,m]=s.time.split(':').map(Number);
+    const dtStart=dateStr+'T'+h.toString().padStart(2,'0')+m.toString().padStart(2,'0')+'00';
+    // Estimate duration: meals 30min, exercise from desc, others 15min
+    let durMin=15;
+    if(s.mk) durMin=30;
+    else if(s.desc){
+      const dm=s.desc.match(/(\d+)\s*分钟/);
+      if(dm) durMin=parseInt(dm[1]);
+    }
+    const endMin=h*60+m+durMin;
+    const eH=Math.floor(endMin/60);const eM=endMin%60;
+    const dtEnd=dateStr+'T'+eH.toString().padStart(2,'0')+eM.toString().padStart(2,'0')+'00';
+    let summary=s.title;
+    let desc=s.desc||'';
+    if(s.mk&&meals[s.mk]){const m2=meals[s.mk];desc+=(desc?' | ':'')+m2.items+' ('+m2.kcal+'kcal)';if(m2.tip)desc+=' · '+m2.tip;}
+    if(desc)desc+='\n由 HerCycle 生成';
+    lines.push('BEGIN:VEVENT');
+    lines.push('DTSTART:'+dtStart);
+    lines.push('DTEND:'+dtEnd);
+    lines.push('SUMMARY:'+summary.replace(/,/g,'\\,'));
+    if(desc)lines.push('DESCRIPTION:'+desc.replace(/\n/g,'\\n').replace(/,/g,'\\,'));
+    lines.push('UID:'+(base+i)+'@hercycle.app');
+    lines.push('STATUS:CONFIRMED');
+    lines.push('END:VEVENT');
+  });
+  lines.push('END:VCALENDAR');
+  const ics=lines.join(CRLF);
+  const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='HerCycle-日程.ics';a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Toast元素
+
 function goBack(){
-  document.getElementById('page-result').classList.add('hidden');
   document.getElementById('page-input').classList.remove('hidden');
+  document.getElementById('page-result').classList.add('hidden');
+  document.querySelector('.tabs').style.display='none';
+  document.getElementById('phase-banner').style.marginTop='0';
+  document.getElementById('video-section').style.display='none';
+  document.querySelectorAll('.goal-chip').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('goal').value='';
+  CP.completedExercises=[];
+  updateWorkoutProgress();
 }
-const d=new Date();d.setDate(d.getDate()-14);
-document.getElementById('last-period').value=d.toISOString().split('T')[0];
-switchTab('diet');
+document.body.insertAdjacentHTML('beforeend','<div class="toast" id="toast"></div>');
+
+// 训练进度缓存
+function saveExProgress(){
+  try{localStorage.setItem('hercycle_ex_'+CP.phase,JSON.stringify(CP.completedExercises));}catch(e){}
+}
+function restoreExProgress(){
+  try{
+    const saved=localStorage.getItem('hercycle_ex_'+CP.phase);
+    if(!saved)return;
+    CP.completedExercises=JSON.parse(saved);
+    // 延迟恢复UI（等renderWorkoutContent完成）
+    setTimeout(()=>{
+      CP.completedExercises.forEach(key=>{
+        const idx=parseInt(key.split('-').pop());
+        const btn=document.querySelector('.exercise-checkbox[data-idx="'+idx+'"]');
+        if(btn)btn.classList.add('checked');
+      });
+      updateWorkoutProgress();
+    },100);
+  }catch(e){}
+}
+
+// 时间设置缓存
+function saveTimeSettings(){
+  try{
+    localStorage.setItem('hercycle_time',JSON.stringify({
+      wake:document.getElementById('tc-wake').value,
+      breakfast:document.getElementById('tc-breakfast').value,
+      lunch:document.getElementById('tc-lunch').value,
+      dinner:document.getElementById('tc-dinner').value,
+      sleep:document.getElementById('tc-sleep').value
+    }));
+  }catch(e){}
+}
+function restoreTimeSettings(){
+  try{
+    const saved=JSON.parse(localStorage.getItem('hercycle_time'));
+    if(!saved)return;
+    if(saved.wake)document.getElementById('tc-wake').value=saved.wake;
+    if(saved.breakfast)document.getElementById('tc-breakfast').value=saved.breakfast;
+    if(saved.lunch)document.getElementById('tc-lunch').value=saved.lunch;
+    if(saved.dinner)document.getElementById('tc-dinner').value=saved.dinner;
+    if(saved.sleep)document.getElementById('tc-sleep').value=saved.sleep;
+  }catch(e){}
+}
+
+// Header+Tabs布局修正（修复marginTop双重补偿+表单页遮挡）
+function fixLayout(){
+  const header=document.querySelector('.header');
+  const tabs=document.querySelector('.tabs');
+  const banner=document.getElementById('phase-banner');
+  const pageInput=document.getElementById('page-input');
+  if(!header)return;
+  const hH=header.offsetHeight;
+  // 表单页：补偿header高度，避免内容被遮挡
+  if(pageInput)pageInput.style.paddingTop=(hH+8)+'px';
+  if(tabs){
+    tabs.style.top=hH+'px';
+    const tH=tabs.offsetHeight||46;
+    // banner的marginTop只补偿header+tabs高度，不再设置header-spacer的height
+    if(banner)banner.style.marginTop=(hH+tH+4)+'px';
+  }else if(banner){
+    banner.style.marginTop=(hH+4)+'px';
+  }
+}
+window.addEventListener('resize',fixLayout);
+document.addEventListener('DOMContentLoaded',()=>{fixLayout();setTimeout(fixLayout,200);});
+
+// Restore form from localStorage
+(function restoreForm(){
+  try{
+    const saved=JSON.parse(localStorage.getItem('hercycle_form'));
+    if(!saved)return;
+    if(saved.h)document.getElementById('height').value=saved.h;
+    if(saved.w)document.getElementById('weight').value=saved.w;
+    if(saved.a)document.getElementById('age').value=saved.a;
+    if(saved.cycle!=='undefined'&&saved.cycle!==undefined){
+      document.getElementById('cycle-length').value=saved.cycle;
+    }
+    if(saved.lp)document.getElementById('last-period').value=saved.lp;
+    if(saved.pl)document.getElementById('period-length').value=saved.pl;
+    if(saved.goal){
+      document.getElementById('goal').value=saved.goal;
+      const chip=document.querySelector('.goal-chip[data-goal="'+saved.goal+'"]');
+      if(chip)chip.classList.add('selected');
+    }
+  }catch(e){}
+  restoreTimeSettings();
+})();
 </script>
 </body>
 </html>
